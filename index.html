@@ -847,14 +847,19 @@ function renderGems() {
   }
   grid.innerHTML = gems.map(g => `
     <div class="gem-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})" style="cursor:pointer">
-      <div class="gem-left" style="flex:1">
+      <div class="gem-left" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.4rem">
         <div class="gem-name">${g.name}</div>
         <div class="gem-dev">${g.developer || '—'}</div>
+        <div style="margin-top:0.5rem">
+          <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Score</div>
+          <div style="font-family:var(--font-mono);font-size:1rem;color:var(--gold);font-weight:600">${fmt.score(g.wilson_score)}</div>
+        </div>
       </div>
-      <div class="gem-right" style="flex:1">
-        <div class="gem-stat" style="align-items:flex-end"><span class="k">Score</span><span class="v">${fmt.score(g.wilson_score)}</span></div>
-        <div class="gem-stat" style="align-items:flex-end"><span class="k">Owners</span><span class="v">${fmt.owners(g.owners_lower)}</span></div>
-        <div class="gem-stat" style="align-items:flex-end"><span class="k">Price</span><span class="v">${fmt.price(g.price_usd)}</span></div>
+      <div style="flex:1;overflow:hidden;border-radius:6px;max-height:90px">
+        <img src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
+             alt="${g.name}"
+             style="width:100%;height:100%;object-fit:cover;display:block;border-radius:6px"
+             onerror="this.style.display='none'" />
       </div>
     </div>
   `).join('');
