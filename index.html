@@ -268,10 +268,18 @@
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
+      transition: color .15s;
     }
-    th:hover { color: var(--accent); }
-    th .sort-icon { margin-left: 4px; opacity: 0.4; }
-    th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+    th:hover { color: var(--text); }
+    th.sorted { color: var(--accent); }
+    th .sort-arrow {
+      display: inline-block;
+      margin-left: 4px;
+      font-size: 0.6rem;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    th.sorted .sort-arrow { opacity: 1; }
     td {
       padding: 0.65rem 1rem;
       font-size: 0.85rem;
@@ -642,13 +650,13 @@
       <thead>
         <tr>
           <th>#</th>
-          <th data-col="name">Game</th>
-          <th data-col="wilson_score" class="sorted">Score ▼</th>
-          <th data-col="price_usd">Price</th>
+          <th data-col="name">Game <span class="sort-arrow">▼</span></th>
+          <th data-col="wilson_score" class="sorted">Score <span class="sort-arrow">▼</span></th>
+          <th data-col="price_usd">Price <span class="sort-arrow">▼</span></th>
           <th>Genre</th>
-          <th data-col="owners_lower">Owners</th>
-          <th data-col="ccu">Live</th>
-          <th data-col="total_reviews">Reviews</th>
+          <th data-col="owners_lower">Owners <span class="sort-arrow">▼</span></th>
+          <th data-col="ccu">Live <span class="sort-arrow">▼</span></th>
+          <th data-col="total_reviews">Reviews <span class="sort-arrow">▼</span></th>
           <th>Type</th>
         </tr>
       </thead>
@@ -694,7 +702,7 @@
       <canvas id="ccu-chart" height="280"></canvas>
     </div>
     <div class="chart-card">
-      <h3>Free vs. Paid — Rating Distribution</h3>
+      <h3>Free vs. Paid — Wilson Score Distribution</h3>
       <canvas id="free-paid-chart" height="280"></canvas>
     </div>
   </div>
@@ -883,9 +891,14 @@ function setupFilters() {
     th.addEventListener('click', () => {
       const col = th.dataset.col;
       if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = -1; }
-      document.querySelectorAll('#player-table-wrap th').forEach(t => t.classList.remove('sorted'));
+      document.querySelectorAll('#player-table-wrap th').forEach(t => {
+        t.classList.remove('sorted');
+        const arrow = t.querySelector('.sort-arrow');
+        if (arrow) arrow.textContent = '▼';
+      });
       th.classList.add('sorted');
-      th.querySelector('.sort-icon') && (th.querySelector('.sort-icon').textContent = sortDir === -1 ? '▼' : '▲');
+      const arrow = th.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = sortDir === -1 ? '▼' : '▲';
       applyFilters();
     });
   });
