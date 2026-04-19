@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SteamLens — Game Analytics Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --surface2:  #1c2333;
+      --border:    #30363d;
+      --accent:    #58a6ff;
+      --accent2:   #3fb950;
+      --accent3:   #f78166;
+      --gold:      #e3b341;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --font-head: 'Rajdhani', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-body: 'IBM Plex Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 0 2rem;
+      height: 56px;
+    }
+    .nav-logo {
+      font-family: var(--font-head);
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .nav-logo span { color: var(--text); }
+    .nav-tabs { display: flex; gap: 0; margin-left: auto; }
+    .nav-tab {
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 0 1.25rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      color: var(--muted);
+      border-bottom: 2px solid transparent;
+      transition: color .2s, border-color .2s;
+      user-select: none;
+    }
+    .nav-tab:hover { color: var(--text); }
+    .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .data-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-left: auto;
+      display: none;
+    }
+    .data-badge.visible { display: block; }
+
+    /* ── PAGES ── */
+    .page { display: none; padding: 2rem; max-width: 1400px; margin: 0 auto; }
+    .page.active { display: block; }
+
+    /* ── HERO STRIP ── */
+    .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #1a2744 50%, #0d1117 100%);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem 2.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(88,166,255,0.08) 0%, transparent 60%);
+    }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .hero h1 {
+      font-family: var(--font-head);
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 0.4rem;
+    }
+    .hero p { color: var(--muted); font-size: 0.9rem; max-width: 560px; }
+
+    /* ── STAT CARDS ── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+    }
+    .stat-card .label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .stat-card .value {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .stat-card .value.blue  { color: var(--accent); }
+    .stat-card .value.green { color: var(--accent2); }
+    .stat-card .value.gold  { color: var(--gold); }
+    .stat-card .value.red   { color: var(--accent3); }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: var(--font-head);
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: flex-end;
+      margin-bottom: 1.5rem;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 0.3rem; }
+    .filter-group label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .filter-group select, .filter-group input[type=range] {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 0.4rem 0.75rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      cursor: pointer;
+      min-width: 140px;
+    }
+    .filter-group select:focus { outline: 1px solid var(--accent); }
+    .range-val {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+    .btn-reset {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      padding: 0.45rem 1rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+      align-self: flex-end;
+    }
+    .btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── GRID LAYOUT ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+    .full-col { margin-bottom: 1.5rem; }
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── CHART CARD ── */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+    }
+    .chart-card h3 {
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .chart-card canvas { width: 100% !important; }
+
+    /* ── GAME TABLE ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--surface2); }
+    th {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    th:hover { color: var(--accent); }
+    th .sort-icon { margin-left: 4px; opacity: 0.4; }
+    th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+    td {
+      padding: 0.65rem 1rem;
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr { transition: background .15s; }
+    tbody tr:hover { background: var(--surface2); }
+    .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+    .badge-gem  { background: rgba(227,179,65,0.15); color: var(--gold); border: 1px solid rgba(227,179,65,0.3); }
+    .badge-free { background: rgba(63,185,80,0.15);  color: var(--accent2); border: 1px solid rgba(63,185,80,0.3); }
+    .badge-paid { background: rgba(88,166,255,0.1);  color: var(--accent); border: 1px solid rgba(88,166,255,0.2); }
+    .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .score-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      min-width: 60px;
+    }
+    .score-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+    }
+    .score-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .no-data {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 2rem;
+    }
+
+    /* ── HIDDEN GEMS GRID ── */
+    .gems-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .gem-card {
+      background: var(--surface);
+      border: 1px solid rgba(227,179,65,0.25);
+      border-radius: 8px;
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color .2s, transform .2s;
+    }
+    .gem-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .gem-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+    }
+    .gem-icon {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    .gem-name {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+    .gem-dev {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .gem-stats {
+      display: flex;
+      gap: 1rem;
+    }
+    .gem-stat { display: flex; flex-direction: column; gap: 2px; }
+    .gem-stat .k {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .gem-stat .v {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--gold);
+      font-weight: 500;
+    }
+
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface2);
+    }
+    .page-info {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-right: auto;
+    }
+    .page-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 4px;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .page-btn:disabled { opacity: 0.3; cursor: default; }
+    .page-btn.current {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+
+    /* ── LOADING ── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      z-index: 999;
+    }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 2px;
+    }
+    #error-msg {
+      display: none;
+      background: rgba(247,129,102,0.1);
+      border: 1px solid rgba(247,129,102,0.3);
+      color: var(--accent3);
+      border-radius: 6px;
+      padding: 1rem 1.5rem;
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading overlay -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>LOADING DATA...</p>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-logo">Steam<span>Lens</span></div>
+  <div class="nav-tabs">
+    <div class="nav-tab active" data-page="player">🎮 Player View</div>
+    <div class="nav-tab" data-page="dev">📊 Developer View</div>
+  </div>
+  <div class="data-badge" id="data-badge">— games loaded</div>
+</nav>
+
+<!-- ══════════ PAGE: PLAYER ══════════ -->
+<div class="page active" id="page-player">
+
+  <div id="error-msg"></div>
+
+  <div class="hero">
+    <div class="hero-label">// Steam Top 100</div>
+    <h1>Find Your Next Game</h1>
+    <p>Explore the most-played Steam games ranked by community trust score. Filter by price, and uncover hidden gems the algorithm hasn't pushed yet.</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-row" id="player-stats"></div>
+
+  <!-- Hidden Gems -->
+  <div class="section-title">💎 Hidden Gems</div>
+  <div class="gems-grid" id="gems-grid"></div>
+
+  <!-- Filters -->
+  <div class="section-title">🎮 Browse All Games</div>
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>Price</label>
+      <select id="f-price">
+        <option value="all">All</option>
+        <option value="free">Free</option>
+        <option value="paid">Paid</option>
+        <option value="under10">Under $10</option>
+        <option value="under30">Under $30</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
+      <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" />
+    </div>
+    <div class="filter-group">
+      <label>Sort By</label>
+      <select id="f-sort">
+        <option value="wilson_score">Wilson Score</option>
+        <option value="owners_lower">Popularity</option>
+        <option value="ccu">Live Players</option>
+        <option value="total_reviews">Total Reviews</option>
+        <option value="price_usd">Price</option>
+      </select>
+    </div>
+    <button class="btn-reset" id="btn-reset">Reset</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap" id="player-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th data-col="name">Game</th>
+          <th data-col="wilson_score" class="sorted">Score ▼</th>
+          <th data-col="price_usd">Price</th>
+          <th data-col="owners_lower">Owners</th>
+          <th data-col="ccu">Live</th>
+          <th data-col="total_reviews">Reviews</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody id="player-tbody"></tbody>
+    </table>
+    <div class="pagination" id="player-pagination"></div>
+  </div>
+
+  <!-- Scatter chart -->
+  <div class="section-title">📈 Rating vs. Popularity</div>
+  <div class="chart-card full-col">
+    <h3>Does a better rating mean more players?</h3>
+    <canvas id="scatter-chart" height="320"></canvas>
+  </div>
+
+</div>
+
+<!-- ══════════ PAGE: DEVELOPER ══════════ -->
+<div class="page" id="page-dev">
+
+  <div class="hero">
+    <div class="hero-label">// Market Intelligence</div>
+    <h1>What Makes a Game Succeed?</h1>
+    <p>Analyse the relationship between ratings, pricing, and player engagement to inform your next development decision.</p>
+  </div>
+
+  <div class="stat-row" id="dev-stats"></div>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>Price Group vs. Wilson Score</h3>
+      <canvas id="price-box-chart" height="280"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Top 15 Games by Wilson Score</h3>
+      <canvas id="top-bar-chart" height="280"></canvas>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>CCU vs. Wilson Score</h3>
+      <canvas id="ccu-chart" height="280"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Free vs. Paid — Rating Distribution</h3>
+      <canvas id="free-paid-chart" height="280"></canvas>
+    </div>
+  </div>
+
+  <div class="section-title">📋 Full Dataset</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Game</th>
+          <th>Developer</th>
+          <th>Wilson Score</th>
+          <th>Positive</th>
+          <th>Negative</th>
+          <th>Owners</th>
+          <th>Price</th>
+          <th>CCU</th>
+        </tr>
+      </thead>
+      <tbody id="dev-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+// ── Helpers ──────────────────────────────────────────────
+const fmt = {
+  num:   n => n == null ? '—' : Number(n).toLocaleString(),
+  score: n => n == null ? '—' : Number(n).toFixed(4),
+  price: n => n === 0 ? 'Free' : n == null ? '—' : `$${Number(n).toFixed(2)}`,
+  owners: n => {
+    if (n == null) return '—';
+    if (n >= 1e8) return '100M+';
+    if (n >= 1e7) return (n/1e6).toFixed(0)+'M+';
+    if (n >= 1e6) return (n/1e6).toFixed(0)+'M+';
+    if (n >= 1e3) return (n/1e3).toFixed(0)+'K+';
+    return n;
+  }
+};
+
+// ── State ─────────────────────────────────────────────────
+let ALL = [];
+let filtered = [];
+let sortCol = 'wilson_score';
+let sortDir = -1;
+let page = 1;
+const PER_PAGE = 15;
+
+// ── Load Data ─────────────────────────────────────────────
+async function loadData() {
+  try {
+    const res = await fetch('games.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    ALL = await res.json();
+    document.getElementById('loading').style.display = 'none';
+    const badge = document.getElementById('data-badge');
+    badge.textContent = `${ALL.length} games loaded`;
+    badge.classList.add('visible');
+    init();
+  } catch(e) {
+    document.getElementById('loading').style.display = 'none';
+    const err = document.getElementById('error-msg');
+    err.style.display = 'block';
+    err.textContent = `⚠ Could not load games.json — make sure the file is in the same folder as index.html. (${e.message})`;
+    // Load demo data so charts still render
+    ALL = getDemoData();
+    init();
+  }
+}
+
+// ── Demo data fallback ────────────────────────────────────
+function getDemoData() {
+  return [
+    {appid:730,name:"Counter-Strike 2",developer:"Valve",publisher:"Valve",positive:7642084,negative:1173003,total_reviews:8815087,wilson_score:0.8667,owners_lower:100000000,owners_display:"100M+",price_usd:0,discount:0,ccu:1013936,is_hidden_gem:false},
+    {appid:1172470,name:"Apex Legends",developer:"Respawn",publisher:"EA",positive:668053,negative:326926,total_reviews:994979,wilson_score:0.6705,owners_lower:100000000,owners_display:"100M+",price_usd:0,discount:0,ccu:124262,is_hidden_gem:false},
+    {appid:578080,name:"PUBG",developer:"PUBG Corp",publisher:"KRAFTON",positive:1520457,negative:1037487,total_reviews:2557944,wilson_score:0.5938,owners_lower:100000000,owners_display:"100M+",price_usd:0,discount:0,ccu:314682,is_hidden_gem:false},
+    {appid:1245620,name:"ELDEN RING",developer:"FromSoftware",publisher:"Bandai Namco",positive:550000,negative:28000,total_reviews:578000,wilson_score:0.9461,owners_lower:20000000,owners_display:"20M+",price_usd:59.99,discount:0,ccu:35000,is_hidden_gem:false},
+    {appid:1091500,name:"Cyberpunk 2077",developer:"CD Projekt Red",publisher:"CD Projekt",positive:520000,negative:95000,total_reviews:615000,wilson_score:0.8380,owners_lower:20000000,owners_display:"20M+",price_usd:59.99,discount:0,ccu:55000,is_hidden_gem:false},
+  ];
+}
+
+// ── Init ──────────────────────────────────────────────────
+function init() {
+  filtered = [...ALL];
+  renderPlayerStats();
+  renderGems();
+  applyFilters();
+  renderDevPage();
+  buildScatter();
+  buildDevCharts();
+  setupNav();
+  setupFilters();
+}
+
+// ── Nav ───────────────────────────────────────────────────
+function setupNav() {
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('page-' + tab.dataset.page).classList.add('active');
+    });
+  });
+}
+
+// ── Player Stats ──────────────────────────────────────────
+function renderPlayerStats() {
+  const avg = d => d.reduce((a,b) => a+b, 0) / d.length;
+  const scores = ALL.map(g => g.wilson_score).filter(Boolean);
+  const free = ALL.filter(g => g.price_usd === 0).length;
+  const gems = ALL.filter(g => g.is_hidden_gem).length;
+  const topScore = Math.max(...scores);
+
+  document.getElementById('player-stats').innerHTML = `
+    <div class="stat-card"><div class="label">Total Games</div><div class="value blue">${ALL.length}</div></div>
+    <div class="stat-card"><div class="label">Avg Wilson Score</div><div class="value green">${avg(scores).toFixed(3)}</div></div>
+    <div class="stat-card"><div class="label">Free to Play</div><div class="value accent">${free}</div></div>
+    <div class="stat-card"><div class="label">Hidden Gems</div><div class="value gold">💎 ${gems}</div></div>
+    <div class="stat-card"><div class="label">Top Score</div><div class="value blue">${topScore.toFixed(4)}</div></div>
+  `;
+}
+
+// ── Hidden Gems ───────────────────────────────────────────
+function renderGems() {
+  const gems = ALL.filter(g => g.is_hidden_gem).sort((a,b) => b.wilson_score - a.wilson_score);
+  const grid = document.getElementById('gems-grid');
+  if (!gems.length) {
+    grid.innerHTML = '<p style="color:var(--muted);font-size:.85rem">No hidden gems found with current criteria.</p>';
+    return;
+  }
+  grid.innerHTML = gems.map(g => `
+    <div class="gem-card">
+      <div class="gem-icon">💎</div>
+      <div class="gem-name">${g.name}</div>
+      <div class="gem-dev">${g.developer || '—'}</div>
+      <div class="gem-stats">
+        <div class="gem-stat"><span class="k">Score</span><span class="v">${fmt.score(g.wilson_score)}</span></div>
+        <div class="gem-stat"><span class="k">Owners</span><span class="v">${fmt.owners(g.owners_lower)}</span></div>
+        <div class="gem-stat"><span class="k">Price</span><span class="v">${fmt.price(g.price_usd)}</span></div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Filters ───────────────────────────────────────────────
+function setupFilters() {
+  document.getElementById('f-price').addEventListener('change', applyFilters);
+  document.getElementById('f-score').addEventListener('input', e => {
+    document.getElementById('score-val').textContent = parseFloat(e.target.value).toFixed(2);
+    applyFilters();
+  });
+  document.getElementById('f-sort').addEventListener('change', applyFilters);
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('f-price').value = 'all';
+    document.getElementById('f-score').value = 0.5;
+    document.getElementById('score-val').textContent = '0.50';
+    document.getElementById('f-sort').value = 'wilson_score';
+    applyFilters();
+  });
+
+  // Table header sort
+  document.querySelectorAll('#player-table-wrap th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = -1; }
+      document.querySelectorAll('#player-table-wrap th').forEach(t => t.classList.remove('sorted'));
+      th.classList.add('sorted');
+      th.querySelector('.sort-icon') && (th.querySelector('.sort-icon').textContent = sortDir === -1 ? '▼' : '▲');
+      applyFilters();
+    });
+  });
+}
+
+function applyFilters() {
+  const price = document.getElementById('f-price').value;
+  const minScore = parseFloat(document.getElementById('f-score').value);
+  const sort = document.getElementById('f-sort').value;
+
+  filtered = ALL.filter(g => {
+    if (g.wilson_score < minScore) return false;
+    if (price === 'free' && g.price_usd !== 0) return false;
+    if (price === 'paid' && g.price_usd === 0) return false;
+    if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
+    if (price === 'under30' && g.price_usd >= 30) return false;
+    return true;
+  });
+
+  filtered.sort((a,b) => {
+    const av = a[sort] ?? -Infinity;
+    const bv = b[sort] ?? -Infinity;
+    return (bv - av) * sortDir * -1;
+  });
+
+  page = 1;
+  renderTable();
+}
+
+// ── Player Table ──────────────────────────────────────────
+function renderTable() {
+  const start = (page - 1) * PER_PAGE;
+  const slice = filtered.slice(start, start + PER_PAGE);
+  const tbody = document.getElementById('player-tbody');
+
+  if (!slice.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="no-data">No games match the current filters.</td></tr>`;
+    document.getElementById('player-pagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = slice.map((g, i) => `
+    <tr>
+      <td style="color:var(--muted);font-family:var(--font-mono);font-size:.75rem">${start + i + 1}</td>
+      <td><strong>${g.name}</strong><br><span style="font-size:.75rem;color:var(--muted)">${g.developer || ''}</span></td>
+      <td>
+        <div class="score-bar-wrap">
+          <div class="score-bar"><div class="score-bar-fill" style="width:${(g.wilson_score*100).toFixed(1)}%"></div></div>
+          <span class="score-num">${fmt.score(g.wilson_score)}</span>
+        </div>
+      </td>
+      <td><span class="badge ${g.price_usd === 0 ? 'badge-free' : 'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
+      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
+      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
+      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.total_reviews)}</td>
+      <td>${g.is_hidden_gem ? '<span class="badge badge-gem">💎 Gem</span>' : ''}</td>
+    </tr>
+  `).join('');
+
+  renderPagination();
+}
+
+function renderPagination() {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  const pag = document.getElementById('player-pagination');
+  if (total <= 1) { pag.innerHTML = ''; return; }
+
+  let html = `<span class="page-info">${filtered.length} games · page ${page} of ${total}</span>`;
+  html += `<button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>‹</button>`;
+  for (let p2 = 1; p2 <= total; p2++) {
+    if (total > 7 && Math.abs(p2 - page) > 2 && p2 !== 1 && p2 !== total) {
+      if (p2 === 2 || p2 === total - 1) html += `<span style="color:var(--muted);padding:0 4px">…</span>`;
+      continue;
+    }
+    html += `<button class="page-btn ${p2===page?'current':''}" onclick="goPage(${p2})">${p2}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goPage(${page+1})" ${page===total?'disabled':''}>›</button>`;
+  pag.innerHTML = html;
+}
+
+function goPage(n) {
+  const total = Math.ceil(filtered.length / PER_PAGE);
+  if (n < 1 || n > total) return;
+  page = n;
+  renderTable();
+}
+
+// ── Scatter Chart ─────────────────────────────────────────
+function buildScatter() {
+  const ctx = document.getElementById('scatter-chart').getContext('2d');
+  const data = ALL.map(g => ({
+    x: Math.log10(g.owners_lower || 1),
+    y: g.wilson_score,
+    label: g.name,
+    r: Math.max(4, Math.min(20, Math.log10(g.total_reviews + 1) * 3)),
+    gem: g.is_hidden_gem
+  }));
+
+  new Chart(ctx, {
+    type: 'bubble',
+    data: {
+      datasets: [{
+        label: 'Regular',
+        data: data.filter(d => !d.gem),
+        backgroundColor: 'rgba(88,166,255,0.5)',
+        borderColor: 'rgba(88,166,255,0.8)',
+        borderWidth: 1,
+      },{
+        label: '💎 Hidden Gem',
+        data: data.filter(d => d.gem),
+        backgroundColor: 'rgba(227,179,65,0.6)',
+        borderColor: 'rgba(227,179,65,1)',
+        borderWidth: 1.5,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#8b949e', font: { family: 'IBM Plex Mono', size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return `${d.label}  |  Score: ${d.y.toFixed(4)}  |  Owners: ${fmt.owners(Math.pow(10, d.x))}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Owners (log scale)', color: '#8b949e' },
+          ticks: {
+            color: '#8b949e',
+            callback: v => fmt.owners(Math.pow(10, v))
+          },
+          grid: { color: 'rgba(48,54,61,0.6)' }
+        },
+        y: {
+          title: { display: true, text: 'Wilson Score', color: '#8b949e' },
+          ticks: { color: '#8b949e' },
+          grid: { color: 'rgba(48,54,61,0.6)' },
+          min: 0.4, max: 1.0
+        }
+      }
+    }
+  });
+}
+
+// ── Dev Page ──────────────────────────────────────────────
+function renderDevPage() {
+  const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
+  const scores = ALL.map(g => g.wilson_score);
+  const free = ALL.filter(g => g.price_usd === 0);
+  const paid = ALL.filter(g => g.price_usd > 0);
+
+  document.getElementById('dev-stats').innerHTML = `
+    <div class="stat-card"><div class="label">Total Games</div><div class="value blue">${ALL.length}</div></div>
+    <div class="stat-card"><div class="label">Free Avg Score</div><div class="value green">${avg(free.map(g=>g.wilson_score)).toFixed(3)}</div></div>
+    <div class="stat-card"><div class="label">Paid Avg Score</div><div class="value gold">${avg(paid.map(g=>g.wilson_score)).toFixed(3)}</div></div>
+    <div class="stat-card"><div class="label">Avg CCU</div><div class="value blue">${fmt.num(Math.round(avg(ALL.map(g=>g.ccu))))}</div></div>
+    <div class="stat-card"><div class="label">Total Reviews</div><div class="value green">${fmt.num(ALL.reduce((a,g)=>a+g.total_reviews,0))}</div></div>
+  `;
+
+  const tbody = document.getElementById('dev-tbody');
+  const sorted = [...ALL].sort((a,b) => b.wilson_score - a.wilson_score);
+  tbody.innerHTML = sorted.map(g => `
+    <tr>
+      <td><strong>${g.name}</strong></td>
+      <td style="color:var(--muted);font-size:.8rem">${g.developer || '—'}</td>
+      <td>
+        <div class="score-bar-wrap">
+          <div class="score-bar"><div class="score-bar-fill" style="width:${(g.wilson_score*100).toFixed(1)}%"></div></div>
+          <span class="score-num">${fmt.score(g.wilson_score)}</span>
+        </div>
+      </td>
+      <td style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent2)">${fmt.num(g.positive)}</td>
+      <td style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent3)">${fmt.num(g.negative)}</td>
+      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
+      <td><span class="badge ${g.price_usd===0?'badge-free':'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
+      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Dev Charts ────────────────────────────────────────────
+function buildDevCharts() {
+  const CHART_OPTS = {
+    color: '#8b949e',
+    grid: { color: 'rgba(48,54,61,0.6)' },
+    ticks: { color: '#8b949e' }
+  };
+
+  // Price group box (approximated as bar of medians + range)
+  const groups = { 'Free': [], '$0.01–$9.99': [], '$10–$29.99': [], '$30+': [] };
+  ALL.forEach(g => {
+    const k = g.price_usd === 0 ? 'Free' : g.price_usd < 10 ? '$0.01–$9.99' : g.price_usd < 30 ? '$10–$29.99' : '$30+';
+    groups[k].push(g.wilson_score);
+  });
+  const medians = Object.entries(groups).map(([k, arr]) => {
+    const s = [...arr].sort((a,b)=>a-b);
+    return { label: k, median: s[Math.floor(s.length/2)] || 0, min: s[0]||0, max: s[s.length-1]||0, n: arr.length };
+  });
+
+  new Chart(document.getElementById('price-box-chart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: medians.map(d => `${d.label} (n=${d.n})`),
+      datasets: [{
+        label: 'Median Wilson Score',
+        data: medians.map(d => d.median),
+        backgroundColor: ['rgba(63,185,80,0.6)','rgba(88,166,255,0.6)','rgba(88,166,255,0.4)','rgba(227,179,65,0.6)'],
+        borderColor: ['#3fb950','#58a6ff','#58a6ff','#e3b341'],
+        borderWidth: 1,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 0.5, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid },
+        x: { ...CHART_OPTS, grid: { display: false } }
+      }
+    }
+  });
+
+  // Top 15 bar
+  const top15 = [...ALL].sort((a,b)=>b.wilson_score-a.wilson_score).slice(0,15);
+  new Chart(document.getElementById('top-bar-chart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: top15.map(g => g.name.length > 18 ? g.name.slice(0,16)+'…' : g.name),
+      datasets: [{
+        data: top15.map(g => g.wilson_score),
+        backgroundColor: top15.map(g => g.is_hidden_gem ? 'rgba(227,179,65,0.7)' : 'rgba(88,166,255,0.6)'),
+        borderColor: top15.map(g => g.is_hidden_gem ? '#e3b341' : '#58a6ff'),
+        borderWidth: 1,
+        borderRadius: 3,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { min: 0.85, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid },
+        y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  });
+
+  // CCU scatter
+  const ccuData = ALL.map(g => ({ x: Math.log10(g.ccu + 1), y: g.wilson_score, label: g.name }));
+  new Chart(document.getElementById('ccu-chart').getContext('2d'), {
+    type: 'scatter',
+    data: { datasets: [{ data: ccuData, backgroundColor: 'rgba(247,129,102,0.5)', borderColor: 'rgba(247,129,102,0.8)', borderWidth: 1, pointRadius: 5 }] },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: ${ctx.raw.y.toFixed(4)}` } }
+      },
+      scales: {
+        x: { title: { display: true, text: 'CCU (log)', color: '#8b949e' }, ticks: { color: '#8b949e', callback: v => fmt.num(Math.round(Math.pow(10,v))) }, grid: CHART_OPTS.grid },
+        y: { title: { display: true, text: 'Wilson Score', color: '#8b949e' }, ticks: { color: '#8b949e' }, grid: CHART_OPTS.grid, min: 0.4 }
+      }
+    }
+  });
+
+  // Free vs Paid histogram
+  const free = ALL.filter(g => g.price_usd === 0).map(g => g.wilson_score);
+  const paid = ALL.filter(g => g.price_usd > 0).map(g => g.wilson_score);
+  const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
+  const binCount = (arr, lo, hi) => arr.filter(v => v >= lo && v < hi).length;
+  const labels = bins.slice(0,-1).map((b,i) => `${b}–${bins[i+1]}`);
+
+  new Chart(document.getElementById('free-paid-chart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Free', data: bins.slice(0,-1).map((b,i)=>binCount(free,b,bins[i+1])), backgroundColor: 'rgba(63,185,80,0.6)', borderColor: '#3fb950', borderWidth: 1, borderRadius: 3 },
+        { label: 'Paid', data: bins.slice(0,-1).map((b,i)=>binCount(paid,b,bins[i+1])), backgroundColor: 'rgba(88,166,255,0.5)', borderColor: '#58a6ff', borderWidth: 1, borderRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { color: '#8b949e', font: { family: 'IBM Plex Mono', size: 11 } } } },
+      scales: {
+        x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { display: false } },
+        y: { ticks: { color: '#8b949e' }, grid: CHART_OPTS.grid }
+      }
+    }
+  });
+}
+
+// ── Boot ──────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
