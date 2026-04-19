@@ -640,16 +640,6 @@
       <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
       <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" />
     </div>
-    <div class="filter-group">
-      <label>Sort By</label>
-      <select id="f-sort">
-        <option value="wilson_score">Wilson Score</option>
-        <option value="owners_lower">Popularity</option>
-        <option value="ccu">Live Players</option>
-        <option value="total_reviews">Total Reviews</option>
-        <option value="price_usd">Price</option>
-      </select>
-    </div>
     <button class="btn-reset" id="btn-reset">Reset</button>
   </div>
 
@@ -911,13 +901,11 @@ function setupFilters() {
     document.getElementById('score-val').textContent = parseFloat(e.target.value).toFixed(2);
     applyFilters();
   });
-  document.getElementById('f-sort').addEventListener('change', applyFilters);
   document.getElementById('btn-reset').addEventListener('click', () => {
     document.getElementById('f-genre').value = 'all';
     document.getElementById('f-price').value = 'all';
     document.getElementById('f-score').value = 0.5;
     document.getElementById('score-val').textContent = '0.50';
-    document.getElementById('f-sort').value = 'wilson_score';
     applyFilters();
   });
 
@@ -943,7 +931,6 @@ function applyFilters() {
   const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
   const minScore = parseFloat(document.getElementById('f-score').value);
-  const sort = document.getElementById('f-sort').value;
 
   filtered = ALL.filter(g => {
     if (g.wilson_score < minScore) return false;
@@ -956,8 +943,8 @@ function applyFilters() {
   });
 
   filtered.sort((a,b) => {
-    const av = a[sort] ?? -Infinity;
-    const bv = b[sort] ?? -Infinity;
+    const av = a[sortCol] ?? -Infinity;
+    const bv = b[sortCol] ?? -Infinity;
     return sortDir === -1 ? bv - av : av - bv;
   });
 
