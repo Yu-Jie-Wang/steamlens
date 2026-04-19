@@ -13,7 +13,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 1013936,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Free To Play",
+    "tags": "FPS, Shooter, Multiplayer, Competitive, Action, Team-Based, e-sports, Tactical, First-Person, PvP, Online Co-Op, Co-op, Strategy, Military, War, Difficult, Trading, Realistic, Fast-Paced, Moddable"
   },
   {
     "appid": 1172470,
@@ -29,7 +31,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 124262,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Free To Play",
+    "tags": "Free to Play, Battle Royale, Multiplayer, FPS, Shooter, First-Person, PvP, Action, Hero Shooter, Team-Based, Tactical, Sci-fi, Loot, Survival, Co-op, Character Customization, Funny, Lore-Rich, Cyberpunk, Cinematic"
   },
   {
     "appid": 578080,
@@ -45,7 +49,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 314682,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer, Free To Play",
+    "tags": "Survival, Shooter, Battle Royale, Multiplayer, FPS, PvP, Third-Person Shooter, Action, Online Co-Op, Tactical, Co-op, First-Person, Strategy, Early Access, Competitive, Third Person, Team-Based, Difficult, Simulation, Stealth"
   },
   {
     "appid": 1623730,
@@ -61,7 +67,9 @@
     "price_usd": 29.99,
     "discount": "0",
     "ccu": 18028,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG, Early Access",
+    "tags": "Open World, Survival, Creature Collector, Multiplayer, Open World Survival Craft, Online Co-Op, Crafting, Co-op, Adventure, Base-Building, Sandbox, Building, Third-Person Shooter, Automation, Action, RPG, Anime, Early Access, Exploration, Farming"
   },
   {
     "appid": 440,
@@ -77,7 +85,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 43819,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Free To Play",
+    "tags": "Free to Play, Hero Shooter, Multiplayer, FPS, Shooter, Action, Class-Based, Team-Based, Funny, First-Person, Online Co-Op, Competitive, Cartoony, Trading, Co-op, Comedy, Robots, Tactical, Cartoon, Crafting"
   },
   {
     "appid": 1938090,
@@ -93,7 +103,9 @@
     "price_usd": 38.49,
     "discount": "45",
     "ccu": 67419,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "FPS, Multiplayer, Shooter, Singleplayer, Action, Military, First-Person, War, Modern, Tactical, Violent, Co-op, Realistic, Story Rich, Atmospheric, Mature, Online Co-Op, Gore, Third-Person Shooter, Third Person"
   },
   {
     "appid": 1063730,
@@ -109,7 +121,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 5583,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer, RPG",
+    "tags": "Open World, Massively Multiplayer, MMORPG, RPG, Adventure, Action, PvP, PvE, Multiplayer, Fantasy, Character Customization, Walking Simulator, Crafting, Third Person, Co-op, Open World Survival Craft, Sandbox, Violent, Sexual Content, Singleplayer"
   },
   {
     "appid": 2358720,
@@ -125,7 +139,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 15004,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, RPG",
+    "tags": "Mythology, Action RPG, Action, Souls-like, RPG, Combat, Story Rich, Singleplayer, Action-Adventure, Drama, Dark Fantasy, Atmospheric, Adventure, 3D, Fantasy, Hack and Slash, Difficult, Third Person, Music, Violent"
   },
   {
     "appid": 271590,
@@ -141,7 +157,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 67851,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure",
+    "tags": "Open World, Action, Multiplayer, Crime, Automobile Sim, Third Person, First-Person, Mature, Shooter, Adventure, Singleplayer, Third-Person Shooter, Racing, Co-op, Sandbox, Atmospheric, Funny, Great Soundtrack, Comedy, Moddable"
   },
   {
     "appid": 550,
@@ -157,7 +175,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 25122,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Zombies, Co-op, FPS, Multiplayer, Shooter, Online Co-Op, Action, Survival, Horror, First-Person, Gore, Team-Based, Moddable, Survival Horror, Post-apocalyptic, Singleplayer, Adventure, Local Co-Op, Replay Value, Tactical"
   },
   {
     "appid": 304930,
@@ -173,7 +193,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 10408,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Casual, Indie, Free To Play",
+    "tags": "Free to Play, Survival, Zombies, Multiplayer, Open World, Co-op, Sandbox, Crafting, Shooter, Adventure, Post-apocalyptic, First-Person, Singleplayer, Looter Shooter, FPS, Action, Massively Multiplayer, Indie, Atmospheric, Casual"
   },
   {
     "appid": 1599340,
@@ -189,7 +211,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 17355,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer, RPG, Free To Play",
+    "tags": "MMORPG, Free to Play, Action RPG, Multiplayer, Hack and Slash, Character Customization, RPG, Massively Multiplayer, Action, Sexual Content, Adventure, PvE, Fantasy, PvP, Isometric, Online Co-Op, Class-Based, Singleplayer, Violent, Gore"
   },
   {
     "appid": 236390,
@@ -205,7 +229,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 50478,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Massively Multiplayer, Simulation, Free To Play",
+    "tags": "Free to Play, Simulation, Vehicular Combat, Combat, World War II, Flight, VR, War, Military, Tanks, Multiplayer, Naval Combat, Modern, Massively Multiplayer, Cold War, Realistic, Shooter, Action, Third Person, Third-Person Shooter"
   },
   {
     "appid": 2246340,
@@ -221,7 +247,9 @@
     "price_usd": 69.99,
     "discount": "0",
     "ccu": 12494,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, RPG",
+    "tags": "Hunting, Action, Multiplayer, Online Co-Op, Co-op, Dating Sim, Character Customization, Dragons, Open World, Third Person, Action RPG, Adventure, Fantasy, Cute, RPG, Singleplayer, Atmospheric, Great Soundtrack, Underwater, Souls-like"
   },
   {
     "appid": 553850,
@@ -237,7 +265,9 @@
     "price_usd": 39.99,
     "discount": "0",
     "ccu": 53399,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Online Co-Op, PvE, Third-Person Shooter, Multiplayer, Action, Shooter, Co-op, Sci-fi, Capitalism, Space, Extraction Shooter, Third Person, Comedy, Gore, Violent, Great Soundtrack, Difficult, Psychological Horror, Singleplayer, Open World"
   },
   {
     "appid": 230410,
@@ -253,7 +283,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 36195,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, RPG, Free To Play",
+    "tags": "Free to Play, Action RPG, Looter Shooter, Third-Person Shooter, Action, RPG, Third Person, Character Customization, Massively Multiplayer, Online Co-Op, Co-op, PvE, Sci-fi, Singleplayer, Space, Shooter, Lore-Rich, Hack and Slash, Parkour, Ninja"
   },
   {
     "appid": 1245620,
@@ -269,7 +301,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 29529,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, RPG",
+    "tags": "Souls-like, Open World, Dark Fantasy, RPG, Difficult, Action RPG, Third Person, Multiplayer, Fantasy, Singleplayer, Online Co-Op, Action, Co-op, Atmospheric, PvP, Great Soundtrack, Violent, 3D, Character Customization, Family Friendly"
   },
   {
     "appid": 105600,
@@ -285,7 +319,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 24580,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG",
+    "tags": "Open World Survival Craft, Sandbox, Survival, 2D, Multiplayer, Adventure, Pixel Graphics, Crafting, Building, Exploration, Co-op, Open World, Online Co-Op, Indie, Action, RPG, Singleplayer, Replay Value, Platformer, Atmospheric"
   },
   {
     "appid": 2694490,
@@ -301,7 +337,9 @@
     "price_usd": 29.99,
     "discount": "0",
     "ccu": 16727,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer, RPG, Early Access",
+    "tags": "Action RPG, Hack and Slash, RPG, Souls-like, MMORPG, Dark Fantasy, Isometric, Action, Loot, Dungeon Crawler, Adventure, Multiplayer, Online Co-Op, Character Customization, Early Access, Inventory Management, Crafting, Horror, Dark, Free to Play"
   },
   {
     "appid": 431960,
@@ -317,7 +355,9 @@
     "price_usd": 4.99,
     "discount": "0",
     "ccu": 91184,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Casual, Indie, Animation & Modeling, Design & Illustration, Photo Editing, Utilities",
+    "tags": "Mature, Utilities, Anime, Software, Design & Illustration, Animation & Modeling, First-Person, NSFW, Indie, Memes, Cute, Action, Singleplayer, Funny, Early Access, Photo Editing, Sandbox, Horror, Gaming, Game Development"
   },
   {
     "appid": 1086940,
@@ -333,7 +373,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 54771,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Adventure, RPG, Strategy",
+    "tags": "RPG, Character Customization, Choices Matter, Story Rich, Turn-Based Combat, Dungeons & Dragons, CRPG, Fantasy, Adventure, Sexual Content, Romance, Online Co-Op, Multiplayer, Strategy, Singleplayer, Co-op Campaign, Nudity, Class-Based, Dark Fantasy, Combat"
   },
   {
     "appid": 291550,
@@ -349,7 +391,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 14169,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Indie, Free To Play",
+    "tags": "Free to Play, Multiplayer, Fighting, 2D Fighter, 2D Platformer, Casual, Local Multiplayer, Co-op, Controller, Platformer, Action, Online Co-Op, Local Co-Op, Fantasy, 4 Player Local, Family Friendly, e-sports, Cartoony, Singleplayer, Indie"
   },
   {
     "appid": 4000,
@@ -365,7 +409,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 18400,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Casual, Indie, Simulation",
+    "tags": "Sandbox, Moddable, Multiplayer, Physics, Building, Casual, Funny, First-Person, Singleplayer, FPS, Simulation, Comedy, Online Co-Op, Co-op, Shooter, Action, Indie, PvP, Realistic, Exploration"
   },
   {
     "appid": 1085660,
@@ -381,7 +427,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 24619,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Free To Play",
+    "tags": "Free to Play, Open World, Multiplayer, Looter Shooter, MMORPG, FPS, Co-op, PvE, PvP, Shooter, Massively Multiplayer, Loot, First-Person, Sci-fi, Action, Adventure, Lore-Rich, Space, Competitive, Atmospheric"
   },
   {
     "appid": 359550,
@@ -397,7 +445,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 51847,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "FPS, PvP, Multiplayer, Tactical, e-sports, Shooter, Competitive, Online Co-Op, Action, Hero Shooter, Team-Based, Military, Strategy, First-Person, Co-op, Realistic, War, Destruction, Difficult, 3D"
   },
   {
     "appid": 252490,
@@ -413,7 +463,9 @@
     "price_usd": 39.99,
     "discount": "0",
     "ccu": 143870,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, Massively Multiplayer, RPG",
+    "tags": "Survival, Crafting, Multiplayer, Open World, Open World Survival Craft, Building, PvP, Sandbox, Adventure, First-Person, Action, Nudity, FPS, Shooter, Co-op, Online Co-Op, Indie, Post-apocalyptic, Early Access, Simulation"
   },
   {
     "appid": 552990,
@@ -429,7 +481,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 8518,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Massively Multiplayer, Simulation, Strategy, Free To Play",
+    "tags": "Free to Play, Naval Combat, Action, Co-op, Tactical, Online Co-Op, Multiplayer, Naval, PvP, World War II, War, Military, Team-Based, Massively Multiplayer, PvE, Simulation, Historical, Shooter, Realistic, Third-Person Shooter"
   },
   {
     "appid": 346110,
@@ -445,7 +499,9 @@
     "price_usd": 14.99,
     "discount": "0",
     "ccu": 22170,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, Massively Multiplayer, RPG",
+    "tags": "Open World Survival Craft, Survival, Multiplayer, Open World, Dinosaurs, Crafting, Building, Adventure, Base-Building, Co-op, Action, Sandbox, First-Person, Massively Multiplayer, Singleplayer, Early Access, RPG, Dragons, Sci-fi, Indie"
   },
   {
     "appid": 413150,
@@ -461,7 +517,9 @@
     "price_usd": 14.99,
     "discount": "0",
     "ccu": 50662,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Indie, RPG, Simulation",
+    "tags": "Farming Sim, Pixel Graphics, Multiplayer, Life Sim, RPG, Relaxing, Agriculture, Simulation, Crafting, Sandbox, Indie, Building, Singleplayer, Casual, Open World, 2D, Dating Sim, Cute, Great Soundtrack, Fishing"
   },
   {
     "appid": 242760,
@@ -477,7 +535,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 2892,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, Simulation",
+    "tags": "Open World Survival Craft, Survival, Open World, Horror, Crafting, Adventure, Building, Survival Horror, First-Person, Action, Exploration, Sandbox, Singleplayer, Atmospheric, Simulation, Gore, Realistic, Indie, Zombies, Early Access"
   },
   {
     "appid": 1491000,
@@ -493,7 +553,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 256,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Simulation, Free To Play",
+    "tags": "Free to Play, Third-Person Shooter, Mechs, PvP, Multiplayer, Action, Arena Shooter, Robots, Sci-fi, Futuristic, Shooter, Third Person, Online Co-Op, Team-Based, Combat, 3D, Controller, Destruction, Massively Multiplayer, Simulation"
   },
   {
     "appid": 238960,
@@ -509,7 +571,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 4694,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, Massively Multiplayer, RPG, Free To Play",
+    "tags": "Free to Play, Dark Fantasy, Action RPG, Hack and Slash, Loot, MMORPG, Multiplayer, Dungeon Crawler, Isometric, Character Customization, RPG, Online Co-Op, Singleplayer, Inventory Management, Action, PvP, Horror, Massively Multiplayer, Fantasy, Adventure"
   },
   {
     "appid": 218620,
@@ -525,7 +589,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 27254,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, RPG",
+    "tags": "Co-op, Action, FPS, Heist, Multiplayer, Looter Shooter, Online Co-Op, Stealth, Crime, Shooter, Team-Based, First-Person, Great Soundtrack, Gun Customization, Tactical, PvE, Strategy, Singleplayer, Funny, Simulation"
   },
   {
     "appid": 291480,
@@ -541,7 +607,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 270,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Massively Multiplayer, Free To Play",
+    "tags": "Free to Play, FPS, Multiplayer, Shooter, Action, PvP, Co-op, Gun Customization, Character Customization, First-Person, Online Co-Op, Team-Based, Tactical, Realistic, Class-Based, Massively Multiplayer, Military, PvE, War, Competitive"
   },
   {
     "appid": 901583,
@@ -557,7 +625,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 0,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure",
+    "tags": "Open World, Action, Automobile Sim, Multiplayer, Crime, Third Person, Adventure, Singleplayer, Third-Person Shooter, Moddable, Sandbox, Shooter, Physics, Atmospheric, Classic, Dark Humor, Funny, Gore, Satire, Co-op"
   },
   {
     "appid": 899770,
@@ -573,7 +643,9 @@
     "price_usd": 34.99,
     "discount": "0",
     "ccu": 5831,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG",
+    "tags": "Action RPG, Loot, Hack and Slash, RPG, Isometric, Multiplayer, Action, Co-op, Adventure, Top-Down, Dungeon Crawler, Indie, Singleplayer, Fantasy, Gore, MMORPG, Character Customization, Magic, Violent, Time Travel"
   },
   {
     "appid": 340,
@@ -589,7 +661,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 2,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "FPS, Action, Singleplayer, First-Person, Sci-fi, Shooter, Short, Aliens, Dystopian , Classic, Adventure, Atmospheric, Benchmark, Futuristic, Silent Protagonist, Free to Play, Post-apocalyptic, Story Rich, Multiplayer, Great Soundtrack"
   },
   {
     "appid": 1091500,
@@ -605,7 +679,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 22265,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "RPG",
+    "tags": "Cyberpunk, Open World, Nudity, RPG, Singleplayer, Sci-fi, FPS, Story Rich, Mature, Futuristic, First-Person, Atmospheric, Exploration, Action, Violent, Great Soundtrack, Action RPG, Adventure, Character Customization, Immersive Sim"
   },
   {
     "appid": 381210,
@@ -621,7 +697,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 44886,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Horror, Multiplayer, Survival Horror, Online Co-Op, Co-op, Survival, Gore, Team-Based, Blood, Stealth, Third Person, Violent, First-Person, Psychological Horror, Action, Atmospheric, Strategy, Comedy, Mature, Difficult"
   },
   {
     "appid": 990080,
@@ -637,7 +715,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 5716,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, RPG",
+    "tags": "Magic, Open World, Fantasy, Singleplayer, Adventure, RPG, Character Customization, Exploration, Story Rich, Third Person, Action-Adventure, Atmospheric, Action RPG, Action, Combat, Choices Matter, Puzzle, Great Soundtrack, Dark, Family Friendly"
   },
   {
     "appid": 438100,
@@ -653,7 +733,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 34699,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Adventure, Casual, Massively Multiplayer, Simulation, Sports, Free To Play, Early Access",
+    "tags": "VR, Free to Play, Multiplayer, Anime, Memes, Funny, Massively Multiplayer, First-Person, Open World, Early Access, Simulation, Casual, Adventure, MMORPG, Comedy, Sandbox, Dating Sim, Survival Horror, Action, Atmospheric"
   },
   {
     "appid": 292030,
@@ -669,7 +751,9 @@
     "price_usd": 39.99,
     "discount": "0",
     "ccu": 15893,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "RPG",
+    "tags": "Open World, RPG, Story Rich, Atmospheric, Mature, Fantasy, Adventure, Singleplayer, Nudity, Choices Matter, Great Soundtrack, Third Person, Medieval, Action, Multiple Endings, Action RPG, Dark Fantasy, Magic, Dark, Sandbox"
   },
   {
     "appid": 945360,
@@ -685,7 +769,9 @@
     "price_usd": 4.99,
     "discount": "0",
     "ccu": 3832,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Casual",
+    "tags": "Multiplayer, Social Deduction, Online Co-Op, Space, Survival, 2D, Funny, Psychological, Party Game, Co-op, Cartoony, Local Multiplayer, Casual, Action, Sci-fi, PvP, Top-Down, Colorful, Minigames, Aliens"
   },
   {
     "appid": 1097150,
@@ -701,7 +787,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 664,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Casual, Indie, Massively Multiplayer, Sports",
+    "tags": "Multiplayer, Party Game, Battle Royale, Family Friendly, Massively Multiplayer, Platformer, Cute, Funny, PvP, 3D Platformer, Controller, Casual, Colorful, Action, Online Co-Op, Co-op, Comedy, Physics, Indie, Difficult"
   },
   {
     "appid": 49520,
@@ -717,7 +805,9 @@
     "price_usd": 4.99,
     "discount": "75",
     "ccu": 8551,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, RPG",
+    "tags": "Loot, Shooter, Action, Multiplayer, Co-op, Looter Shooter, FPS, RPG, First-Person, Funny, Comedy, Open World, Combat, Online Co-Op, Adventure, Action RPG, Dark Humor, Singleplayer, Memes, Sci-fi"
   },
   {
     "appid": 227300,
@@ -733,7 +823,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 17281,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Indie, Simulation",
+    "tags": "Driving, Transportation, Simulation, Open World, Automobile Sim, Realistic, Moddable, Relaxing, Exploration, Economy, Immersive Sim, Management, Atmospheric, Multiplayer, Controller, Family Friendly, Third Person, Adventure, Casual, Indie"
   },
   {
     "appid": 892970,
@@ -749,7 +841,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 14439,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG, Early Access",
+    "tags": "Open World Survival Craft, Survival, Online Co-Op, Open World, Multiplayer, Building, Crafting, Base-Building, Exploration, Co-op, Adventure, Difficult, Mythology, Sandbox, PvE, Third Person, Action, Singleplayer, Early Access, Indie"
   },
   {
     "appid": 739630,
@@ -765,7 +859,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 9978,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Indie, Early Access",
+    "tags": "Horror, Online Co-Op, Multiplayer, Psychological Horror, Co-op, Supernatural, VR, First-Person, Investigation, Dark, Demons, Detective, Mystery, Thriller, 3D, Early Access, Indie, Action, Tactical, Singleplayer"
   },
   {
     "appid": 444090,
@@ -781,7 +877,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 1028,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer, Strategy, Free To Play",
+    "tags": "Hero Shooter, Free to Play, Multiplayer, FPS, Shooter, Action, Team-Based, First-Person, PvP, MOBA, Online Co-Op, Fantasy, Controller, Strategy, Co-op, Character Customization, Massively Multiplayer, Colorful, Adventure, Funny"
   },
   {
     "appid": 1203220,
@@ -797,7 +895,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 66954,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer",
+    "tags": "Battle Royale, Multiplayer, Martial Arts, Mature, PvP, Action, Female Protagonist, Character Customization, Massively Multiplayer, Fighting, Survival, Third Person, Swordplay, Hack and Slash, Anime, Parkour, Adventure, Free to Play, Violent, Gore"
   },
   {
     "appid": 320,
@@ -813,7 +913,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 159,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Action, FPS, Multiplayer, Shooter, First-Person, Sci-fi, Physics, Competitive, Funny, Co-op, Old School, PvP, Arena Shooter, Moddable, Atmospheric, Adventure, Great Soundtrack, Singleplayer, Violent, Mod"
   },
   {
     "appid": 70,
@@ -829,7 +931,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 634,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "FPS, Classic, 1990's, Singleplayer, Sci-fi, Multiplayer, Shooter, Action, First-Person, Aliens, Story Rich, Silent Protagonist, Atmospheric, Gore, Retro, Moddable, Adventure, Action-Adventure, Difficult, PvP"
   },
   {
     "appid": 582010,
@@ -845,7 +949,9 @@
     "price_usd": 29.99,
     "discount": "0",
     "ccu": 11923,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Co-op, Multiplayer, Action, Open World, RPG, Character Customization, Third Person, Adventure, Fantasy, Action RPG, Difficult, Singleplayer, Exploration, Great Soundtrack, Replay Value, Atmospheric, Hack and Slash, JRPG, MMORPG, Souls-like"
   },
   {
     "appid": 227940,
@@ -861,7 +967,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 0,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Free To Play, Indie, Massively Multiplayer, Strategy",
+    "tags": "Free to Play, World War II, FPS, Multiplayer, War, Shooter, Action, First-Person, Massively Multiplayer, Strategy, Tactical, Co-op, Historical, Open World, Simulation, Atmospheric, Adventure, Indie, Early Access, RTS"
   },
   {
     "appid": 252950,
@@ -877,7 +985,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 21106,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Indie, Racing, Sports",
+    "tags": "Multiplayer, Football (Soccer), Competitive, Sports, Racing, Team-Based, Online Co-Op, Football (American), Fast-Paced, Co-op, Action, Funny, Great Soundtrack, Local Multiplayer, Split Screen, Local Co-Op, Singleplayer, 4 Player Local, Casual, Indie"
   },
   {
     "appid": 108600,
@@ -893,7 +1003,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 22864,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Indie, RPG, Simulation, Early Access",
+    "tags": "Survival, Zombies, Open World, Multiplayer, Open World Survival Craft, Sandbox, Post-apocalyptic, Co-op, Crafting, Building, Indie, Simulation, RPG, Survival Horror, Realistic, Isometric, Singleplayer, 2D, Adventure, Early Access"
   },
   {
     "appid": 1966720,
@@ -909,7 +1021,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 6199,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Action, Adventure, Indie, Early Access",
+    "tags": "Online Co-Op, Horror, First-Person, Co-op, Survival Horror, Exploration, Funny, Psychological Horror, Sci-fi, PvE, Atmospheric, Procedural Generation, Aliens, Time Management, Adventure, Dungeon Crawler, Action, Early Access, Action-Adventure, Perma Death"
   },
   {
     "appid": 1174180,
@@ -925,7 +1039,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 29885,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure",
+    "tags": "Open World, Story Rich, Western, Adventure, Multiplayer, Action, Realistic, Singleplayer, Shooter, Atmospheric, Horses, Beautiful, Mature, Third-Person Shooter, Great Soundtrack, Third Person, Gore, Sandbox, First-Person, FPS"
   },
   {
     "appid": 1517290,
@@ -941,7 +1057,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 2774,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Casual",
+    "tags": "FPS, Multiplayer, Shooter, Military, War, Singleplayer, Action, First-Person, Combat, Team-Based, PvP, Futuristic, Vehicular Combat, Modern, Destruction, Physics, Cinematic, Adventure, Hero Shooter, Casual"
   },
   {
     "appid": 1240440,
@@ -957,7 +1075,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 2275,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Free To Play",
+    "tags": "Free to Play, FPS, Multiplayer, Singleplayer, Shooter, Action, First-Person, Open World, Sci-fi, Co-op, PvP, Competitive, Story Rich, Space, Adventure, Aliens, Lore-Rich, Atmospheric, Cinematic, Soundtrack"
   },
   {
     "appid": 648800,
@@ -973,7 +1093,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 4701,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Adventure, Indie, Simulation",
+    "tags": "Survival, Multiplayer, Open World Survival Craft, Co-op, Crafting, Open World, Building, Base-Building, Online Co-Op, Adventure, Sandbox, First-Person, Singleplayer, Underwater, Simulation, Early Access, Action, Indie, Strategy, Massively Multiplayer"
   },
   {
     "appid": 386360,
@@ -989,7 +1111,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 1853,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Casual, Massively Multiplayer, RPG, Strategy, Free To Play",
+    "tags": "Free to Play, MOBA, Multiplayer, Action, Third Person, Mythology, Strategy, MMORPG, Team-Based, Nostalgia, Competitive, Anime, PvP, Co-op, e-sports, Massively Multiplayer, RPG, Adventure, Casual, Strategy RPG"
   },
   {
     "appid": 444200,
@@ -1005,7 +1129,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 5707,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Massively Multiplayer, Simulation, Strategy, Free To Play",
+    "tags": "Tanks, Free to Play, Shooter, Action, FPS, Multiplayer, Strategy, Massively Multiplayer, PvP, World War II, Real Time Tactics, Team-Based, War, Online Co-Op, Competitive, Military, Singleplayer, Realistic, 3D Platformer, Vehicular Combat"
   },
   {
     "appid": 10,
@@ -1021,7 +1147,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 7323,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Action",
+    "tags": "Action, FPS, Multiplayer, Shooter, Classic, Team-Based, First-Person, Competitive, Tactical, 1990's, e-sports, PvP, Old School, Military, Strategy, Survival, Score Attack, 1980s, Assassin, Nostalgia"
   },
   {
     "appid": 240,
@@ -1037,7 +1165,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 6187,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Shooter, FPS, Action, Multiplayer, Team-Based, First-Person, Competitive, Tactical, PvP, e-sports, Military, War, Strategy, Moddable, Singleplayer, Difficult, Atmospheric, Survival, Simulation, Sandbox"
   },
   {
     "appid": 3164500,
@@ -1053,7 +1183,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 22757,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Action, Indie, Simulation, Strategy, Early Access",
+    "tags": "Simulation, Co-op, Crime, Multiplayer, Open World, Management, First-Person, Action, Crafting, Base-Building, Automation, Building, Stealth, Strategy, FPS, Character Customization, Driving, Shooter, Early Access, Action-Adventure"
   },
   {
     "appid": 755790,
@@ -1069,7 +1201,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 0,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Free To Play, Massively Multiplayer",
+    "tags": "Free to Play, Battle Royale, Shooter, Multiplayer, Survival, FPS, Action, Massively Multiplayer, Third-Person Shooter, Early Access, Singleplayer, Open World, PvP, Co-op, Tactical, 3D, Violent, Gore, MOBA, First-Person"
   },
   {
     "appid": 400,
@@ -1085,7 +1219,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 638,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Action",
+    "tags": "Puzzle, Puzzle-Platformer, First-Person, 3D Platformer, Singleplayer, Sci-fi, Comedy, Female Protagonist, Physics, Funny, Action, Classic, Story Rich, Platformer, Science, Atmospheric, Dark Humor, Short, FPS, Adventure"
   },
   {
     "appid": 1222670,
@@ -1101,7 +1237,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 25276,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Adventure, Casual, Simulation, Free To Play",
+    "tags": "Life Sim, Character Customization, Free to Play, Building, Romance, Simulation, Sandbox, Singleplayer, Dating Sim, Relaxing, Casual, Realistic, Family Friendly, Funny, Immersive Sim, Cute, Fantasy, Adventure, Cartoony, Nudity"
   },
   {
     "appid": 550650,
@@ -1117,7 +1255,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 212,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Free To Play",
+    "tags": "Free to Play, FPS, Shooter, Multiplayer, Action, Early Access, First-Person, Military, Singleplayer, PvP, Co-op, War, Tactical, Massively Multiplayer, Team-Based, Violent, Open World, Strategy, Gore, Adventure"
   },
   {
     "appid": 322330,
@@ -1133,7 +1273,9 @@
     "price_usd": 5.09,
     "discount": "66",
     "ccu": 30542,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG, Simulation, Strategy",
+    "tags": "Survival, Open World Survival Craft, Multiplayer, Co-op, Open World, Adventure, Crafting, Online Co-Op, Sandbox, Difficult, Indie, 2D, Atmospheric, Funny, Survival Horror, Strategy, Horror, Singleplayer, Action, Rogue-like"
   },
   {
     "appid": 239140,
@@ -1149,7 +1291,9 @@
     "price_usd": 24.99,
     "discount": "0",
     "ccu": 4953,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, RPG",
+    "tags": "Zombies, Survival Horror, Horror, Online Co-Op, Open World, Parkour, First-Person, Survival, Open World Survival Craft, Gore, FPS, Action, PvE, Stealth, PvP, Multiplayer, Post-apocalyptic, Story Rich, Action RPG, Hack and Slash"
   },
   {
     "appid": 477160,
@@ -1165,7 +1309,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 950,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Adventure, Casual, Indie, Simulation",
+    "tags": "Co-op, Funny, Puzzle, Adventure, Physics, Multiplayer, Sandbox, Puzzle-Platformer, Action, Open World, Local Co-Op, Indie, Local Multiplayer, Comedy, Parkour, Casual, Split Screen, Singleplayer, 3D Platformer, Simulation"
   },
   {
     "appid": 251570,
@@ -1181,7 +1327,9 @@
     "price_usd": 44.99,
     "discount": "0",
     "ccu": 17045,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG, Simulation, Strategy",
+    "tags": "Survival, Zombies, Multiplayer, Open World, Open World Survival Craft, Base-Building, Post-apocalyptic, Voxel, Online Co-Op, Building, Exploration, Sandbox, FPS, Simulation, Tower Defense, Character Customization, Action, Horror, Strategy, Procedural Generation"
   },
   {
     "appid": 100,
@@ -1197,7 +1345,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 83,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Action, FPS, Shooter, Multiplayer, First-Person, Classic, Singleplayer, Tactical, Team-Based, Competitive, Strategy, Online Co-Op, Military, Masterpiece, Adventure, Survival, Atmospheric, Open World, Simulation, Dark"
   },
   {
     "appid": 1665460,
@@ -1213,7 +1363,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 13404,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Simulation, Sports, Free To Play",
+    "tags": "Football (Soccer), Free to Play, Controller, Multiplayer, Sports, e-sports, Simulation, Local Multiplayer, PvP, Co-op, Singleplayer, Online Co-Op, Local Co-Op, Realistic, Comedy, Memes, Violent, Anime, LGBTQ+, Funny"
   },
   {
     "appid": 417910,
@@ -1229,7 +1381,9 @@
     "price_usd": 1.99,
     "discount": "0",
     "ccu": 1,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Massively Multiplayer, Simulation, Sports",
+    "tags": "Fighting, Action, Multiplayer, Sports, Violent, Massively Multiplayer, Simulation, Open World, Free to Play, PvP, Early Access, Co-op, Indie, Funny, Character Customization, Singleplayer"
   },
   {
     "appid": 433850,
@@ -1245,7 +1399,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 1010,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Free To Play, Massively Multiplayer",
+    "tags": "Survival, Massively Multiplayer, Multiplayer, Open World, Battle Royale, PvP, FPS, Action, Shooter, Free to Play, Third-Person Shooter, Zombies, Co-op, Early Access, Online Co-Op, Adventure, First-Person, Violent, Gore, Walking Simulator"
   },
   {
     "appid": 594650,
@@ -1261,7 +1417,9 @@
     "price_usd": 13.49,
     "discount": "55",
     "ccu": 6300,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "Open World, Extraction Shooter, Multiplayer, Atmospheric, Tactical, FPS, Perma Death, Western, Shooter, PvP, Horror, Online Co-Op, Co-op, Survival Horror, Difficult, Battle Royale, Team-Based, Action, Gore, Zombies"
   },
   {
     "appid": 814380,
@@ -1277,7 +1435,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 6767,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure",
+    "tags": "Souls-like, Difficult, Action, Singleplayer, Ninja, Stealth, Adventure, Third Person, Open World, Story Rich, Violent, Atmospheric, Assassin, Dark Fantasy, Hack and Slash, RPG, Gore, Great Soundtrack, Rhythm, Dark"
   },
   {
     "appid": 1116170,
@@ -1293,7 +1453,9 @@
     "price_usd": 14.99,
     "discount": "0",
     "ccu": 3,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG",
+    "tags": "Top-Down Shooter, Twin Stick Shooter, Top-Down, Singleplayer, Character Customization, PvE, Isometric, Tactical, Violent, Indie, Co-op, Gun Customization, Looter Shooter, Cyberpunk, Action, Inventory Management, Arena Shooter, Shooter, RPG, Adventure"
   },
   {
     "appid": 220,
@@ -1309,7 +1471,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 1555,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Action",
+    "tags": "FPS, Action, Sci-fi, Classic, Singleplayer, Story Rich, Shooter, First-Person, Adventure, Dystopian , Atmospheric, Zombies, Silent Protagonist, Physics, Aliens, Great Soundtrack, Horror, Multiplayer, Puzzle, Moddable"
   },
   {
     "appid": 107410,
@@ -1325,7 +1489,9 @@
     "price_usd": 8.99,
     "discount": "70",
     "ccu": 7181,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Simulation, Strategy",
+    "tags": "Military, Action, Multiplayer, Shooter, Simulation, Realistic, First-Person, Open World, Tactical, FPS, War, Co-op, Strategy, Sandbox, Singleplayer, Moddable, Combat, Online Co-Op, Team-Based, Third-Person Shooter"
   },
   {
     "appid": 1326470,
@@ -1341,7 +1507,9 @@
     "price_usd": 29.99,
     "discount": "0",
     "ccu": 4450,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, Simulation",
+    "tags": "Survival, Open World, Multiplayer, Co-op, Survival Horror, Base-Building, Horror, Crafting, First-Person, Building, Exploration, Adventure, Singleplayer, Atmospheric, Sandbox, Action-Adventure, Action, Simulation, Immersive Sim, Early Access"
   },
   {
     "appid": 219990,
@@ -1357,7 +1525,9 @@
     "price_usd": 3.74,
     "discount": "85",
     "ccu": 2376,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG",
+    "tags": "Action RPG, Hack and Slash, Loot, Isometric, Dark Fantasy, RPG, Dungeon Crawler, Co-op, Singleplayer, Character Customization, Dark, Multiplayer, Adventure, Fantasy, Action, Atmospheric, Post-apocalyptic, Crafting, Moddable, Choices Matter"
   },
   {
     "appid": 255710,
@@ -1373,7 +1543,9 @@
     "price_usd": 29.99,
     "discount": "0",
     "ccu": 8842,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Simulation, Strategy",
+    "tags": "City Builder, Simulation, Building, Management, Strategy, Sandbox, Singleplayer, Moddable, Economy, Resource Management, Mod, Realistic, Replay Value, Casual, Modern, Real-Time with Pause, Family Friendly, Great Soundtrack, Funny, Action"
   },
   {
     "appid": 261550,
@@ -1389,7 +1561,9 @@
     "price_usd": 49.99,
     "discount": "0",
     "ccu": 14477,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Indie, RPG, Simulation, Strategy",
+    "tags": "Medieval, Strategy, Open World, RPG, War, Sandbox, Multiplayer, Singleplayer, Action, Character Customization, Simulation, Moddable, Adventure, Horses, Realistic, Third Person, Historical, First-Person, Great Soundtrack, Early Access"
   },
   {
     "appid": 8930,
@@ -1405,7 +1579,9 @@
     "price_usd": 29.99,
     "discount": "0",
     "ccu": 12206,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Strategy",
+    "tags": "Turn-Based Strategy, Strategy, Turn-Based, Multiplayer, Historical, 4X, Addictive, Singleplayer, Hex Grid, Grand Strategy, Replay Value, Co-op, Economy, Tactical, Diplomacy, Moddable, Simulation, Classic, Great Soundtrack, Touch-Friendly"
   },
   {
     "appid": 304050,
@@ -1421,7 +1597,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 758,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Casual, Massively Multiplayer, RPG, Free To Play",
+    "tags": "Free to Play, Open World, Sandbox, Pixel Graphics, Fantasy, MMORPG, Voxel, Multiplayer, Crafting, Family Friendly, Replay Value, RPG, Building, Procedural Generation, Adventure, Dungeon Crawler, Massively Multiplayer, Nostalgia, Action, Colorful"
   },
   {
     "appid": 289070,
@@ -1437,7 +1615,9 @@
     "price_usd": 59.99,
     "discount": "0",
     "ccu": 25420,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Strategy",
+    "tags": "Strategy, Turn-Based Strategy, Multiplayer, Historical, Grand Strategy, Singleplayer, Turn-Based, 4X, War, City Builder, Simulation, Tactical, Management, Building, Great Soundtrack, Online Co-Op, Moddable, Co-op, Hex Grid, Atmospheric"
   },
   {
     "appid": 377160,
@@ -1453,7 +1633,9 @@
     "price_usd": 19.99,
     "discount": "0",
     "ccu": 11179,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "RPG",
+    "tags": "Open World, Post-apocalyptic, Singleplayer, Exploration, RPG, Adventure, Atmospheric, Shooter, First-Person, Story Rich, Action, Sci-fi, FPS, Action RPG, Sandbox, Great Soundtrack, Survival, Third Person, Third-Person Shooter, Character Customization"
   },
   {
     "appid": 532210,
@@ -1469,7 +1651,9 @@
     "price_usd": 31.96,
     "discount": "0",
     "ccu": 153,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Adventure",
+    "tags": "Choices Matter, Story Rich, Adventure, Singleplayer, Great Soundtrack, Atmospheric, Episodic, Drama, Sexual Content, Choose Your Own Adventure, LGBTQ+, Point & Click, Third Person, Walking Simulator, Mystery, Nudity, Puzzle, Comedy, Funny, Classic"
   },
   {
     "appid": 2186680,
@@ -1485,7 +1669,9 @@
     "price_usd": 49.99,
     "discount": "0",
     "ccu": 3582,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Indie, RPG, Strategy",
+    "tags": "Character Customization, Cinematic, Story Rich, Turn-Based Strategy, Dark Fantasy, Romance, Turn-Based Tactics, Strategy, Action, RPG, Turn-Based, Singleplayer, Warhammer 40K, Choices Matter, Futuristic, Multiplayer, Adventure, CRPG, Turn-Based Combat, Online Co-Op"
   },
   {
     "appid": 1238810,
@@ -1501,7 +1687,9 @@
     "price_usd": 49.99,
     "discount": "0",
     "ccu": 6327,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action",
+    "tags": "FPS, Multiplayer, Singleplayer, World War II, Shooter, War, Military, First-Person, Massively Multiplayer, PvP, Combat, Open World, Action, Historical, Destruction, Battle Royale, Atmospheric, Violent, Sexual Content, Female Protagonist"
   },
   {
     "appid": 3241660,
@@ -1517,7 +1705,9 @@
     "price_usd": 9.99,
     "discount": "0",
     "ccu": 32349,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Early Access",
+    "tags": "Horror, Online Co-Op, Multiplayer, Comedy, Co-op, Physics, 3D, First-Person, Stealth, Action, Robots, Survival, Exploration, Action Roguelike, Procedural Generation, Post-apocalyptic, Perma Death, Sci-fi, Dystopian , Early Access"
   },
   {
     "appid": 221100,
@@ -1533,7 +1723,9 @@
     "price_usd": 22.49,
     "discount": "55",
     "ccu": 37066,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Adventure, Massively Multiplayer",
+    "tags": "Survival, Open World, Online Co-Op, Zombies, Multiplayer, Post-apocalyptic, Shooter, PvP, Massively Multiplayer, Action, FPS, Horror, Sandbox, Co-op, Survival Horror, Adventure, First-Person, Simulation, Atmospheric, Choose Your Own Adventure"
   },
   {
     "appid": 526870,
@@ -1549,7 +1741,9 @@
     "price_usd": 27.99,
     "discount": "30",
     "ccu": 12596,
-    "is_hidden_gem": true
+    "is_hidden_gem": true,
+    "genre": "Adventure, Indie, Simulation, Strategy",
+    "tags": "Base-Building, Automation, Open World, Multiplayer, Crafting, Co-op, Building, Resource Management, Sandbox, Exploration, Adventure, Open World Survival Craft, Survival, First-Person, Simulation, Strategy, Sci-fi, Singleplayer, Early Access, Indie"
   },
   {
     "appid": 1089350,
@@ -1565,7 +1759,9 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 221,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Simulation, Sports",
+    "tags": "Basketball, Sports, Simulation, Multiplayer, Singleplayer, Capitalism, Casual, Loot, Local Multiplayer, Massively Multiplayer, Character Customization, Controller, Realistic"
   },
   {
     "appid": 632360,
@@ -1581,7 +1777,9 @@
     "price_usd": 8.24,
     "discount": "67",
     "ccu": 7902,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Action, Indie",
+    "tags": "Third-Person Shooter, Action Roguelike, Multiplayer, Co-op, Action, Rogue-lite, Rogue-like, Looter Shooter, Loot, Online Co-Op, Shooter, Great Soundtrack, Difficult, Third Person, Indie, Survival, Singleplayer, Soundtrack, Early Access, Bullet Hell"
   },
   {
     "appid": 1811260,
@@ -1597,6 +1795,8 @@
     "price_usd": 0,
     "discount": "0",
     "ccu": 1280,
-    "is_hidden_gem": false
+    "is_hidden_gem": false,
+    "genre": "Simulation, Sports",
+    "tags": "Football (Soccer), Sports, Controller, e-sports, PvP, Management, Simulation, Team-Based, Realistic, Third Person, Immersive Sim, Multiplayer, Local Multiplayer, Local Co-Op, Co-op, Singleplayer, Online Co-Op, PvE, Free to Play, LGBTQ+"
   }
 ]

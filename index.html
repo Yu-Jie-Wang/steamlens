@@ -488,6 +488,12 @@
   <div class="section-title">🎮 Browse All Games</div>
   <div class="filter-bar">
     <div class="filter-group">
+      <label>Genre</label>
+      <select id="f-genre">
+        <option value="all">All Genres</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>Price</label>
       <select id="f-price">
         <option value="all">All</option>
@@ -523,6 +529,7 @@
           <th data-col="name">Game</th>
           <th data-col="wilson_score" class="sorted">Score ▼</th>
           <th data-col="price_usd">Price</th>
+          <th>Genre</th>
           <th data-col="owners_lower">Owners</th>
           <th data-col="ccu">Live</th>
           <th data-col="total_reviews">Reviews</th>
@@ -718,8 +725,27 @@ function renderGems() {
   `).join('');
 }
 
+// ── Populate Genre Dropdown ───────────────────────────────
+function populateGenres() {
+  const genreSet = new Set();
+  ALL.forEach(g => {
+    if (g.genre) {
+      g.genre.split(',').map(s => s.trim()).forEach(gn => genreSet.add(gn));
+    }
+  });
+  const sel = document.getElementById('f-genre');
+  [...genreSet].sort().forEach(gn => {
+    const opt = document.createElement('option');
+    opt.value = gn;
+    opt.textContent = gn;
+    sel.appendChild(opt);
+  });
+}
+
 // ── Filters ───────────────────────────────────────────────
 function setupFilters() {
+  populateGenres();
+  document.getElementById('f-genre').addEventListener('change', applyFilters);
   document.getElementById('f-price').addEventListener('change', applyFilters);
   document.getElementById('f-score').addEventListener('input', e => {
     document.getElementById('score-val').textContent = parseFloat(e.target.value).toFixed(2);
@@ -727,6 +753,7 @@ function setupFilters() {
   });
   document.getElementById('f-sort').addEventListener('change', applyFilters);
   document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('f-genre').value = 'all';
     document.getElementById('f-price').value = 'all';
     document.getElementById('f-score').value = 0.5;
     document.getElementById('score-val').textContent = '0.50';
@@ -748,12 +775,14 @@ function setupFilters() {
 }
 
 function applyFilters() {
+  const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
   const minScore = parseFloat(document.getElementById('f-score').value);
   const sort = document.getElementById('f-sort').value;
 
   filtered = ALL.filter(g => {
     if (g.wilson_score < minScore) return false;
+    if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
@@ -778,7 +807,7 @@ function renderTable() {
   const tbody = document.getElementById('player-tbody');
 
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="8" class="no-data">No games match the current filters.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" class="no-data">No games match the current filters.</td></tr>`;
     document.getElementById('player-pagination').innerHTML = '';
     return;
   }
@@ -794,6 +823,7 @@ function renderTable() {
         </div>
       </td>
       <td><span class="badge ${g.price_usd === 0 ? 'badge-free' : 'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
+      <td style="font-size:.75rem;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.genre || '—'}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.total_reviews)}</td>
