@@ -847,13 +847,12 @@ function renderGems() {
   }
   grid.innerHTML = gems.map(g => `
     <div class="gem-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})" style="cursor:pointer">
-      <div class="gem-left">
+      <div class="gem-left" style="flex:1">
         <div class="gem-name">${g.name}</div>
         <div class="gem-dev">${g.developer || '—'}</div>
-        <div style="font-size:.7rem;color:var(--muted)">${g.genre || ''}</div>
       </div>
-      <div class="gem-right">
-        <div class="gem-stat"><span class="k">Score</span><span class="v">${fmt.score(g.wilson_score)}</span></div>
+      <div class="gem-right" style="flex:1">
+        <div class="gem-stat" style="align-items:flex-end"><span class="k">Score</span><span class="v">${fmt.score(g.wilson_score)}</span></div>
         <div class="gem-stat" style="align-items:flex-end"><span class="k">Owners</span><span class="v">${fmt.owners(g.owners_lower)}</span></div>
         <div class="gem-stat" style="align-items:flex-end"><span class="k">Price</span><span class="v">${fmt.price(g.price_usd)}</span></div>
       </div>
