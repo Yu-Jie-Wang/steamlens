@@ -717,18 +717,18 @@
   </div>
 
   <div class="section-title">📋 Full Dataset</div>
-  <div class="table-wrap">
+  <div class="table-wrap" id="dev-table-wrap">
     <table>
       <thead>
         <tr>
-          <th>Game</th>
-          <th>Developer</th>
-          <th>Wilson Score</th>
-          <th>Positive</th>
-          <th>Negative</th>
-          <th>Owners</th>
-          <th>Price</th>
-          <th>CCU</th>
+          <th data-col="name">Game <span class="sort-arrow">▼</span></th>
+          <th data-col="developer">Developer <span class="sort-arrow">▼</span></th>
+          <th data-col="wilson_score" class="sorted">Wilson Score <span class="sort-arrow">▼</span></th>
+          <th data-col="positive">Positive <span class="sort-arrow">▼</span></th>
+          <th data-col="negative">Negative <span class="sort-arrow">▼</span></th>
+          <th data-col="owners_lower">Owners <span class="sort-arrow">▼</span></th>
+          <th data-col="price_usd">Price <span class="sort-arrow">▼</span></th>
+          <th data-col="ccu">CCU <span class="sort-arrow">▼</span></th>
         </tr>
       </thead>
       <tbody id="dev-tbody"></tbody>
@@ -760,6 +760,9 @@ let sortCol = 'wilson_score';
 let sortDir = -1;
 let page = 1;
 const PER_PAGE = 15;
+
+let devSortCol = 'wilson_score';
+let devSortDir = -1;
 
 // ── Load Data ─────────────────────────────────────────────
 async function loadData() {
@@ -816,6 +819,23 @@ function setupNav() {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
       document.getElementById('page-' + tab.dataset.page).classList.add('active');
+    });
+  });
+
+  // Dev table sort
+  document.querySelectorAll('#dev-table-wrap th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (devSortCol === col) devSortDir *= -1; else { devSortCol = col; devSortDir = -1; }
+      document.querySelectorAll('#dev-table-wrap th').forEach(t => {
+        t.classList.remove('sorted');
+        const arrow = t.querySelector('.sort-arrow');
+        if (arrow) arrow.textContent = '▼';
+      });
+      th.classList.add('sorted');
+      const arrow = th.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = devSortDir === -1 ? '▼' : '▲';
+      renderDevTable();
     });
   });
 }
@@ -1080,10 +1100,19 @@ function renderDevPage() {
     <div class="stat-card"><div class="label">Total Reviews</div><div class="value green">${fmt.num(ALL.reduce((a,g)=>a+g.total_reviews,0))}</div></div>
   `;
 
+  renderDevTable();
+}
+
+function renderDevTable() {
+  const sorted = [...ALL].sort((a,b) => {
+    const av = a[devSortCol] ?? '';
+    const bv = b[devSortCol] ?? '';
+    if (typeof av === 'string') return devSortDir === -1 ? bv.localeCompare(av) : av.localeCompare(bv);
+    return devSortDir === -1 ? bv - av : av - bv;
+  });
   const tbody = document.getElementById('dev-tbody');
-  const sorted = [...ALL].sort((a,b) => b.wilson_score - a.wilson_score);
   tbody.innerHTML = sorted.map(g => `
-    <tr>
+    <tr style="cursor:pointer" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
       <td><strong>${g.name}</strong></td>
       <td style="color:var(--muted);font-size:.8rem">${g.developer || '—'}</td>
       <td>
