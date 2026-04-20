@@ -650,9 +650,9 @@
         <tr>
           <th>#</th>
           <th data-col="name">Game <span class="sort-arrow">▼</span></th>
+          <th>Genre</th>
           <th data-col="wilson_score" class="sorted">Score <span class="sort-arrow">▼</span></th>
           <th data-col="price_usd">Price <span class="sort-arrow">▼</span></th>
-          <th>Genre</th>
           <th data-col="owners_lower">Owners <span class="sort-arrow">▼</span></th>
           <th data-col="ccu">Live <span class="sort-arrow">▼</span></th>
           <th data-col="total_reviews">Reviews <span class="sort-arrow">▼</span></th>
@@ -968,6 +968,7 @@ function renderTable() {
     <tr onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
       <td style="color:var(--muted);font-family:var(--font-mono);font-size:.75rem">${start + i + 1}</td>
       <td><strong>${g.name}</strong><br><span style="font-size:.75rem;color:var(--muted)">${g.developer || ''}</span></td>
+      <td style="font-size:.75rem;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.genre || '—'}</td>
       <td>
         <div class="score-bar-wrap">
           <div class="score-bar"><div class="score-bar-fill" style="width:${(g.wilson_score*100).toFixed(1)}%"></div></div>
@@ -975,7 +976,6 @@ function renderTable() {
         </div>
       </td>
       <td><span class="badge ${g.price_usd === 0 ? 'badge-free' : 'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
-      <td style="font-size:.75rem;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.genre || '—'}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.total_reviews)}</td>
