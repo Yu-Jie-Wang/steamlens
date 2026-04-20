@@ -637,6 +637,17 @@
       </select>
     </div>
     <div class="filter-group">
+      <label>Owners</label>
+      <select id="f-owners">
+        <option value="all">All</option>
+        <option value="1000000">1M+</option>
+        <option value="5000000">5M+</option>
+        <option value="10000000">10M+</option>
+        <option value="50000000">50M+</option>
+        <option value="100000000">100M+</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
       <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" />
     </div>
@@ -656,7 +667,6 @@
           <th data-col="owners_lower">Owners <span class="sort-arrow">▼</span></th>
           <th data-col="ccu">Live <span class="sort-arrow">▼</span></th>
           <th data-col="total_reviews">Reviews <span class="sort-arrow">▼</span></th>
-          <th>Type</th>
         </tr>
       </thead>
       <tbody id="player-tbody"></tbody>
@@ -905,6 +915,7 @@ function setupFilters() {
   populateGenres();
   document.getElementById('f-genre').addEventListener('change', applyFilters);
   document.getElementById('f-price').addEventListener('change', applyFilters);
+  document.getElementById('f-owners').addEventListener('change', applyFilters);
   document.getElementById('f-score').addEventListener('input', e => {
     document.getElementById('score-val').textContent = parseFloat(e.target.value).toFixed(2);
     applyFilters();
@@ -912,6 +923,7 @@ function setupFilters() {
   document.getElementById('btn-reset').addEventListener('click', () => {
     document.getElementById('f-genre').value = 'all';
     document.getElementById('f-price').value = 'all';
+    document.getElementById('f-owners').value = 'all';
     document.getElementById('f-score').value = 0.5;
     document.getElementById('score-val').textContent = '0.50';
     applyFilters();
@@ -938,6 +950,7 @@ function setupFilters() {
 function applyFilters() {
   const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
+  const owners = document.getElementById('f-owners').value;
   const minScore = parseFloat(document.getElementById('f-score').value);
 
   filtered = ALL.filter(g => {
@@ -947,6 +960,7 @@ function applyFilters() {
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (owners !== 'all' && g.owners_lower < Number(owners)) return false;
     return true;
   });
 
@@ -967,7 +981,7 @@ function renderTable() {
   const tbody = document.getElementById('player-tbody');
 
   if (!slice.length) {
-    tbody.innerHTML = `<tr><td colspan="9" class="no-data">No games match the current filters.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="no-data">No games match the current filters.</td></tr>`;
     document.getElementById('player-pagination').innerHTML = '';
     return;
   }
@@ -987,7 +1001,6 @@ function renderTable() {
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.total_reviews)}</td>
-      <td>${g.is_hidden_gem ? '<span class="badge badge-gem">💎 Gem</span>' : ''}</td>
     </tr>
   `).join('');
 
