@@ -561,6 +561,18 @@
     .btn-close:hover { border-color: var(--accent3); color: var(--accent3); }
     tbody tr { cursor: pointer; }
 
+    /* ── STICKY FILTER BAR ── */
+    .sticky-filter {
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+      background: rgba(13,17,23,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 2rem;
+      margin: 0 -2rem 1.5rem -2rem;
+    }
+
     /* ── TOP 3 CARDS ── */
     .top3-card {
       background: var(--surface);
@@ -750,6 +762,43 @@
 
   <div class="stat-row" id="dev-stats"></div>
 
+  <!-- Sticky Filter Bar -->
+  <div class="sticky-filter">
+    <div class="filter-bar" style="flex-wrap:nowrap;overflow-x:auto;margin:0;border:none;padding:0;background:transparent">
+      <div class="filter-group" style="min-width:140px;max-width:180px">
+        <label>Company</label>
+        <select id="df-dev" style="width:100%;min-width:0">
+          <option value="all">All Companies</option>
+        </select>
+      </div>
+      <div class="filter-group" style="min-width:120px;max-width:160px">
+        <label>Genre</label>
+        <select id="df-genre" style="width:100%;min-width:0">
+          <option value="all">All Genres</option>
+        </select>
+      </div>
+      <div class="filter-group" style="min-width:100px">
+        <label>Price</label>
+        <select id="df-price" style="width:100%;min-width:0">
+          <option value="all">All</option>
+          <option value="free">Free</option>
+          <option value="paid">Paid</option>
+          <option value="under10">Under $10</option>
+          <option value="under30">Under $30</option>
+        </select>
+      </div>
+      <div class="filter-group" style="min-width:160px">
+        <label>Min Owners: <span class="range-val" id="d-owners-val">Any</span></label>
+        <input type="range" id="df-owners" min="0" max="5" step="1" value="0" style="min-width:120px" />
+      </div>
+      <div class="filter-group" style="min-width:180px">
+        <label>Min Wilson Score: <span class="range-val" id="d-score-val">0.50</span></label>
+        <input type="range" id="df-score" min="0" max="1" step="0.01" value="0.5" style="min-width:120px" />
+      </div>
+      <button class="btn-reset" id="df-btn-reset">Reset</button>
+    </div>
+  </div>
+
   <div class="two-col">
     <div class="chart-card">
       <h3>Price Group vs. Wilson Score</h3>
@@ -837,6 +886,7 @@ let devSortCol = 'wilson_score';
 let devSortDir = -1;
 let devPage = 1;
 const DEV_PER_PAGE = 15;
+let devFiltered = [];
 
 // ── Load Data ─────────────────────────────────────────────
 async function loadData() {
@@ -883,6 +933,7 @@ function init() {
   buildDevCharts();
   setupNav();
   setupFilters();
+  setupDevFilters();
   setupModal();
 }
 
@@ -1250,8 +1301,80 @@ function renderScatter(genre) {
   });
 }
 
-// ── Dev Page ──────────────────────────────────────────────
+// ── Dev Filters ───────────────────────────────────────────
+function setupDevFilters() {
+  const OWNERS_STEPS  = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
+  const OWNERS_LABELS = ['Any', '1M+', '5M+', '10M+', '50M+', '100M+'];
+
+  // Populate dropdowns from ALL
+  const genreSet = new Set();
+  const devSet   = new Set();
+  ALL.forEach(g => {
+    if (g.genre) g.genre.split(',').map(s=>s.trim()).forEach(gn => genreSet.add(gn));
+    if (g.developer) devSet.add(g.developer.trim());
+  });
+  const gSel = document.getElementById('df-genre');
+  [...genreSet].sort().forEach(gn => {
+    const o = document.createElement('option'); o.value = gn; o.textContent = gn; gSel.appendChild(o);
+  });
+  const dSel = document.getElementById('df-dev');
+  [...devSet].sort().forEach(d => {
+    const o = document.createElement('option'); o.value = d; o.textContent = d; dSel.appendChild(o);
+  });
+
+  document.getElementById('df-dev').addEventListener('change', applyDevFilters);
+  document.getElementById('df-genre').addEventListener('change', applyDevFilters);
+  document.getElementById('df-price').addEventListener('change', applyDevFilters);
+  document.getElementById('df-owners').addEventListener('input', e => {
+    document.getElementById('d-owners-val').textContent = OWNERS_LABELS[parseInt(e.target.value)];
+    applyDevFilters();
+  });
+  document.getElementById('df-score').addEventListener('input', e => {
+    document.getElementById('d-score-val').textContent = parseFloat(e.target.value).toFixed(2);
+    applyDevFilters();
+  });
+  document.getElementById('df-btn-reset').addEventListener('click', () => {
+    document.getElementById('df-dev').value = 'all';
+    document.getElementById('df-genre').value = 'all';
+    document.getElementById('df-price').value = 'all';
+    document.getElementById('df-owners').value = 0;
+    document.getElementById('d-owners-val').textContent = 'Any';
+    document.getElementById('df-score').value = 0.5;
+    document.getElementById('d-score-val').textContent = '0.50';
+    applyDevFilters();
+  });
+
+  applyDevFilters();
+}
+
+function applyDevFilters() {
+  const dev      = document.getElementById('df-dev').value;
+  const genre    = document.getElementById('df-genre').value;
+  const price    = document.getElementById('df-price').value;
+  const ownersIdx = parseInt(document.getElementById('df-owners').value);
+  const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
+  const minOwners = OWNERS_STEPS[ownersIdx];
+  const minScore  = parseFloat(document.getElementById('df-score').value);
+
+  devFiltered = ALL.filter(g => {
+    if (g.wilson_score < minScore) return false;
+    if (dev !== 'all' && g.developer?.trim() !== dev) return false;
+    if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
+    if (price === 'free' && g.price_usd !== 0) return false;
+    if (price === 'paid' && g.price_usd === 0) return false;
+    if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
+    if (price === 'under30' && g.price_usd >= 30) return false;
+    if (minOwners > 0 && g.owners_lower < minOwners) return false;
+    return true;
+  });
+
+  devPage = 1;
+  renderDevTable();
+}
+
+// ── Dev Filters ───────────────────────────────────────────
 function renderDevPage() {
+  devFiltered = [...ALL];
   const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
   const scores = ALL.map(g => g.wilson_score);
   const free = ALL.filter(g => g.price_usd === 0);
@@ -1269,7 +1392,7 @@ function renderDevPage() {
 }
 
 function renderDevTable() {
-  const sorted = [...ALL].sort((a,b) => {
+  const sorted = [...devFiltered].sort((a,b) => {
     const av = a[devSortCol] ?? '';
     const bv = b[devSortCol] ?? '';
     if (typeof av === 'string') return devSortDir === -1 ? bv.localeCompare(av) : av.localeCompare(bv);
@@ -1317,7 +1440,7 @@ function renderDevTable() {
 }
 
 function goDevPage(n) {
-  const total = Math.ceil(ALL.length / DEV_PER_PAGE);
+  const total = Math.ceil(devFiltered.length / DEV_PER_PAGE);
   if (n < 1 || n > total) return;
   devPage = n;
   renderDevTable();
