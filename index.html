@@ -685,6 +685,12 @@
   <div class="section-title">🎮 Browse All Games</div>
   <div class="filter-bar">
     <div class="filter-group">
+      <label>Company</label>
+      <select id="f-dev">
+        <option value="all">All Companies</option>
+      </select>
+    </div>
+    <div class="filter-group">
       <label>Genre</label>
       <select id="f-genre">
         <option value="all">All Genres</option>
@@ -994,16 +1000,22 @@ function renderTop3() {
 function populateGenres() {
   const genreSet = new Set();
   ALL.forEach(g => {
-    if (g.genre) {
-      g.genre.split(',').map(s => s.trim()).forEach(gn => genreSet.add(gn));
-    }
+    if (g.genre) g.genre.split(',').map(s => s.trim()).forEach(gn => genreSet.add(gn));
   });
   const sel = document.getElementById('f-genre');
   [...genreSet].sort().forEach(gn => {
     const opt = document.createElement('option');
-    opt.value = gn;
-    opt.textContent = gn;
+    opt.value = gn; opt.textContent = gn;
     sel.appendChild(opt);
+  });
+
+  const devSet = new Set();
+  ALL.forEach(g => { if (g.developer) devSet.add(g.developer.trim()); });
+  const devSel = document.getElementById('f-dev');
+  [...devSet].sort().forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    devSel.appendChild(opt);
   });
 }
 
@@ -1013,6 +1025,7 @@ function setupFilters() {
   const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
   const OWNERS_LABELS = ['Any', '1M+', '5M+', '10M+', '50M+', '100M+'];
 
+  document.getElementById('f-dev').addEventListener('change', applyFilters);
   document.getElementById('f-genre').addEventListener('change', applyFilters);
   document.getElementById('f-price').addEventListener('change', applyFilters);
   document.getElementById('f-owners').addEventListener('input', e => {
@@ -1024,6 +1037,7 @@ function setupFilters() {
     applyFilters();
   });
   document.getElementById('btn-reset').addEventListener('click', () => {
+    document.getElementById('f-dev').value = 'all';
     document.getElementById('f-genre').value = 'all';
     document.getElementById('f-price').value = 'all';
     document.getElementById('f-owners').value = 0;
@@ -1052,6 +1066,7 @@ function setupFilters() {
 }
 
 function applyFilters() {
+  const dev = document.getElementById('f-dev').value;
   const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
   const ownersIdx = parseInt(document.getElementById('f-owners').value);
@@ -1061,6 +1076,7 @@ function applyFilters() {
 
   filtered = ALL.filter(g => {
     if (g.wilson_score < minScore) return false;
+    if (dev !== 'all' && g.developer?.trim() !== dev) return false;
     if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
