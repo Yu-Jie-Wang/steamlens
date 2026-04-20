@@ -683,22 +683,22 @@
 
   <!-- Filters -->
   <div class="section-title">🎮 Browse All Games</div>
-  <div class="filter-bar">
-    <div class="filter-group">
+  <div class="filter-bar" style="flex-wrap:nowrap;overflow-x:auto">
+    <div class="filter-group" style="min-width:140px;max-width:180px">
       <label>Company</label>
-      <select id="f-dev">
+      <select id="f-dev" style="width:100%;min-width:0">
         <option value="all">All Companies</option>
       </select>
     </div>
-    <div class="filter-group">
+    <div class="filter-group" style="min-width:120px;max-width:160px">
       <label>Genre</label>
-      <select id="f-genre">
+      <select id="f-genre" style="width:100%;min-width:0">
         <option value="all">All Genres</option>
       </select>
     </div>
-    <div class="filter-group">
+    <div class="filter-group" style="min-width:100px">
       <label>Price</label>
-      <select id="f-price">
+      <select id="f-price" style="width:100%;min-width:0">
         <option value="all">All</option>
         <option value="free">Free</option>
         <option value="paid">Paid</option>
@@ -706,13 +706,13 @@
         <option value="under30">Under $30</option>
       </select>
     </div>
-    <div class="filter-group">
+    <div class="filter-group" style="min-width:160px">
       <label>Min Owners: <span class="range-val" id="owners-val">Any</span></label>
-      <input type="range" id="f-owners" min="0" max="5" step="1" value="0" />
+      <input type="range" id="f-owners" min="0" max="5" step="1" value="0" style="min-width:120px" />
     </div>
-    <div class="filter-group">
+    <div class="filter-group" style="min-width:180px">
       <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
-      <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" />
+      <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" style="min-width:120px" />
     </div>
     <button class="btn-reset" id="btn-reset">Reset</button>
   </div>
