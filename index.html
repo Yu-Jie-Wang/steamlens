@@ -560,6 +560,58 @@
     }
     .btn-close:hover { border-color: var(--accent3); color: var(--accent3); }
     tbody tr { cursor: pointer; }
+
+    /* ── TOP 3 CARDS ── */
+    .top3-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: border-color .2s, transform .15s;
+      position: relative;
+      overflow: hidden;
+    }
+    .top3-card:hover { border-color: var(--accent); transform: translateX(4px); }
+    .top3-rank {
+      font-family: var(--font-head);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--border);
+      min-width: 2rem;
+      text-align: center;
+      line-height: 1;
+    }
+    .top3-rank.gold   { color: #e3b341; }
+    .top3-rank.silver { color: #8b949e; }
+    .top3-rank.bronze { color: #c47b3a; }
+    .top3-cover {
+      width: 72px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+    .top3-info { flex: 1; min-width: 0; }
+    .top3-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .top3-dev { font-size: 0.75rem; color: var(--muted); }
+    .top3-val {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
@@ -667,19 +719,16 @@
     <div class="pagination" id="player-pagination"></div>
   </div>
 
-  <!-- Scatter chart -->
-  <div class="section-title">📈 Rating vs. Popularity</div>
-  <div class="chart-card full-col">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-      <h3 style="margin:0">Does a better rating mean more players?</h3>
-      <div style="display:flex;align-items:center;gap:0.5rem">
-        <label style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Genre</label>
-        <select id="scatter-genre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.3rem 0.6rem;font-family:var(--font-body);font-size:0.8rem;cursor:pointer">
-          <option value="all">All Genres</option>
-        </select>
-      </div>
+  <!-- Top 3 sections -->
+  <div class="two-col">
+    <div>
+      <div class="section-title">🏆 Top Rated</div>
+      <div id="top3-score"></div>
     </div>
-    <canvas id="scatter-chart" height="320"></canvas>
+    <div>
+      <div class="section-title">🔥 Most Active Now</div>
+      <div id="top3-ccu"></div>
+    </div>
   </div>
 
 </div>
@@ -717,6 +766,21 @@
     </div>
   </div>
 
+  <!-- Scatter chart moved here -->
+  <div class="section-title">📈 Rating vs. Popularity</div>
+  <div class="chart-card full-col">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <h3 style="margin:0">Does a better rating mean more players?</h3>
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <label style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Genre</label>
+        <select id="scatter-genre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.3rem 0.6rem;font-family:var(--font-body);font-size:0.8rem;cursor:pointer">
+          <option value="all">All Genres</option>
+        </select>
+      </div>
+    </div>
+    <canvas id="scatter-chart" height="320"></canvas>
+  </div>
+
   <div class="section-title">📋 Full Dataset</div>
   <div class="table-wrap" id="dev-table-wrap">
     <table>
@@ -734,6 +798,7 @@
       </thead>
       <tbody id="dev-tbody"></tbody>
     </table>
+    <div class="pagination" id="dev-pagination"></div>
   </div>
 
 </div>
@@ -764,6 +829,8 @@ const PER_PAGE = 15;
 
 let devSortCol = 'wilson_score';
 let devSortDir = -1;
+let devPage = 1;
+const DEV_PER_PAGE = 15;
 
 // ── Load Data ─────────────────────────────────────────────
 async function loadData() {
@@ -803,6 +870,7 @@ function init() {
   filtered = [...ALL];
   renderPlayerStats();
   renderGems();
+  renderTop3();
   applyFilters();
   renderDevPage();
   buildScatter();
@@ -882,6 +950,44 @@ function renderGems() {
              style="width:100%;height:100%;object-fit:cover;display:block;border-radius:6px"
              onerror="this.style.display='none'" />
       </div>
+    </div>
+  `).join('');
+}
+
+// ── Top 3 ─────────────────────────────────────────────────
+function renderTop3() {
+  const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : 'bronze';
+  const rankNum   = i => i === 0 ? '1' : i === 1 ? '2' : '3';
+
+  // Top 3 by Wilson Score
+  const topScore = [...ALL].sort((a,b) => b.wilson_score - a.wilson_score).slice(0,3);
+  document.getElementById('top3-score').innerHTML = topScore.map((g,i) => `
+    <div class="top3-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
+      <div class="top3-rank ${rankClass(i)}">${rankNum(i)}</div>
+      <img class="top3-cover"
+           src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
+           onerror="this.style.display='none'" />
+      <div class="top3-info">
+        <div class="top3-name">${g.name}</div>
+        <div class="top3-dev">${g.developer || '—'}</div>
+      </div>
+      <div class="top3-val">${fmt.score(g.wilson_score)}</div>
+    </div>
+  `).join('');
+
+  // Top 3 by CCU
+  const topCCU = [...ALL].sort((a,b) => b.ccu - a.ccu).slice(0,3);
+  document.getElementById('top3-ccu').innerHTML = topCCU.map((g,i) => `
+    <div class="top3-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
+      <div class="top3-rank ${rankClass(i)}">${rankNum(i)}</div>
+      <img class="top3-cover"
+           src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
+           onerror="this.style.display='none'" />
+      <div class="top3-info">
+        <div class="top3-name">${g.name}</div>
+        <div class="top3-dev">${g.developer || '—'}</div>
+      </div>
+      <div class="top3-val" style="color:var(--accent3)">${fmt.num(g.ccu)}</div>
     </div>
   `).join('');
 }
@@ -1155,8 +1261,14 @@ function renderDevTable() {
     if (typeof av === 'string') return devSortDir === -1 ? bv.localeCompare(av) : av.localeCompare(bv);
     return devSortDir === -1 ? bv - av : av - bv;
   });
+
+  const total = Math.ceil(sorted.length / DEV_PER_PAGE);
+  if (devPage > total) devPage = 1;
+  const start = (devPage - 1) * DEV_PER_PAGE;
+  const slice = sorted.slice(start, start + DEV_PER_PAGE);
+
   const tbody = document.getElementById('dev-tbody');
-  tbody.innerHTML = sorted.map(g => `
+  tbody.innerHTML = slice.map(g => `
     <tr style="cursor:pointer" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
       <td><strong>${g.name}</strong></td>
       <td style="color:var(--muted);font-size:.8rem">${g.developer || '—'}</td>
@@ -1173,6 +1285,28 @@ function renderDevTable() {
       <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
     </tr>
   `).join('');
+
+  // Dev pagination
+  const pag = document.getElementById('dev-pagination');
+  if (total <= 1) { pag.innerHTML = ''; return; }
+  let html = `<span class="page-info">${sorted.length} games · page ${devPage} of ${total}</span>`;
+  html += `<button class="page-btn" onclick="goDevPage(${devPage-1})" ${devPage===1?'disabled':''}>‹</button>`;
+  for (let p2 = 1; p2 <= total; p2++) {
+    if (total > 7 && Math.abs(p2 - devPage) > 2 && p2 !== 1 && p2 !== total) {
+      if (p2 === 2 || p2 === total-1) html += `<span style="color:var(--muted);padding:0 4px">…</span>`;
+      continue;
+    }
+    html += `<button class="page-btn ${p2===devPage?'current':''}" onclick="goDevPage(${p2})">${p2}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goDevPage(${devPage+1})" ${devPage===total?'disabled':''}>›</button>`;
+  pag.innerHTML = html;
+}
+
+function goDevPage(n) {
+  const total = Math.ceil(ALL.length / DEV_PER_PAGE);
+  if (n < 1 || n > total) return;
+  devPage = n;
+  renderDevTable();
 }
 
 // ── Dev Charts ────────────────────────────────────────────
