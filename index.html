@@ -666,14 +666,14 @@
   <div class="stat-row" id="player-stats"></div>
 
   <!-- Top 3 sections -->
-  <div class="two-col">
+  <div class="two-col" style="align-items:start">
     <div>
       <div class="section-title">🏆 Top Rated</div>
-      <div class="gems-grid" id="top3-score"></div>
+      <div id="top3-score" style="display:flex;flex-direction:column;gap:0.75rem"></div>
     </div>
     <div>
       <div class="section-title">🔥 Most Active Now</div>
-      <div class="gems-grid" id="top3-ccu"></div>
+      <div id="top3-ccu" style="display:flex;flex-direction:column;gap:0.75rem"></div>
     </div>
   </div>
 
@@ -960,17 +960,17 @@ function renderTop3() {
   const rankNums = ['1', '2', '3'];
 
   const makeCards = (games, valFn) => games.map((g, i) => `
-    <div class="gem-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})" style="cursor:pointer">
+    <div class="gem-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})" style="cursor:pointer;height:110px">
       <div style="position:absolute;top:0.6rem;left:0.75rem;font-family:var(--font-head);font-size:1.4rem;font-weight:700;color:${rankColors[i]};line-height:1;z-index:1">${rankNums[i]}</div>
       <div class="gem-left" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.3rem;padding-left:1.8rem">
-        <div class="gem-name">${g.name}</div>
+        <div class="gem-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${g.name}</div>
         <div class="gem-dev">${g.developer || '—'}</div>
         <div style="margin-top:0.4rem">
           <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase">${valFn.label}</div>
           <div style="font-family:var(--font-mono);font-size:1rem;color:${rankColors[i]};font-weight:600">${valFn.fmt(g)}</div>
         </div>
       </div>
-      <div style="flex:1;overflow:hidden;border-radius:6px;max-height:90px">
+      <div style="width:160px;flex-shrink:0;overflow:hidden;border-radius:6px;height:80px">
         <img src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
              alt="${g.name}"
              style="width:100%;height:100%;object-fit:cover;display:block;border-radius:6px"
