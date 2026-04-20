@@ -637,15 +637,8 @@
       </select>
     </div>
     <div class="filter-group">
-      <label>Owners</label>
-      <select id="f-owners">
-        <option value="all">All</option>
-        <option value="1000000">1M+</option>
-        <option value="5000000">5M+</option>
-        <option value="10000000">10M+</option>
-        <option value="50000000">50M+</option>
-        <option value="100000000">100M+</option>
-      </select>
+      <label>Min Owners: <span class="range-val" id="owners-val">Any</span></label>
+      <input type="range" id="f-owners" min="0" max="5" step="1" value="0" />
     </div>
     <div class="filter-group">
       <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
@@ -913,9 +906,15 @@ function populateGenres() {
 // ── Filters ───────────────────────────────────────────────
 function setupFilters() {
   populateGenres();
+  const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
+  const OWNERS_LABELS = ['Any', '1M+', '5M+', '10M+', '50M+', '100M+'];
+
   document.getElementById('f-genre').addEventListener('change', applyFilters);
   document.getElementById('f-price').addEventListener('change', applyFilters);
-  document.getElementById('f-owners').addEventListener('change', applyFilters);
+  document.getElementById('f-owners').addEventListener('input', e => {
+    document.getElementById('owners-val').textContent = OWNERS_LABELS[parseInt(e.target.value)];
+    applyFilters();
+  });
   document.getElementById('f-score').addEventListener('input', e => {
     document.getElementById('score-val').textContent = parseFloat(e.target.value).toFixed(2);
     applyFilters();
@@ -923,7 +922,8 @@ function setupFilters() {
   document.getElementById('btn-reset').addEventListener('click', () => {
     document.getElementById('f-genre').value = 'all';
     document.getElementById('f-price').value = 'all';
-    document.getElementById('f-owners').value = 'all';
+    document.getElementById('f-owners').value = 0;
+    document.getElementById('owners-val').textContent = 'Any';
     document.getElementById('f-score').value = 0.5;
     document.getElementById('score-val').textContent = '0.50';
     applyFilters();
@@ -950,7 +950,9 @@ function setupFilters() {
 function applyFilters() {
   const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
-  const owners = document.getElementById('f-owners').value;
+  const ownersIdx = parseInt(document.getElementById('f-owners').value);
+  const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
+  const minOwners = OWNERS_STEPS[ownersIdx];
   const minScore = parseFloat(document.getElementById('f-score').value);
 
   filtered = ALL.filter(g => {
@@ -960,7 +962,7 @@ function applyFilters() {
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
-    if (owners !== 'all' && g.owners_lower < Number(owners)) return false;
+    if (minOwners > 0 && g.owners_lower < minOwners) return false;
     return true;
   });
 
