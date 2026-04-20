@@ -667,7 +667,15 @@
   <!-- Scatter chart -->
   <div class="section-title">📈 Rating vs. Popularity</div>
   <div class="chart-card full-col">
-    <h3>Does a better rating mean more players?</h3>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <h3 style="margin:0">Does a better rating mean more players?</h3>
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <label style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Genre</label>
+        <select id="scatter-genre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.3rem 0.6rem;font-family:var(--font-body);font-size:0.8rem;cursor:pointer">
+          <option value="all">All Genres</option>
+        </select>
+      </div>
+    </div>
     <canvas id="scatter-chart" height="320"></canvas>
   </div>
 
@@ -1012,28 +1020,66 @@ function goPage(n) {
 }
 
 // ── Scatter Chart ─────────────────────────────────────────
+let scatterChart = null;
+
 function buildScatter() {
-  const ctx = document.getElementById('scatter-chart').getContext('2d');
-  const data = ALL.map(g => ({
+  // Populate scatter genre dropdown
+  const sel = document.getElementById('scatter-genre');
+  const genreSet = new Set();
+  ALL.forEach(g => {
+    if (g.genre) g.genre.split(',').map(s => s.trim()).forEach(gn => genreSet.add(gn));
+  });
+  [...genreSet].sort().forEach(gn => {
+    const opt = document.createElement('option');
+    opt.value = gn; opt.textContent = gn;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change', updateScatter);
+
+  renderScatter('all');
+}
+
+function updateScatter() {
+  const genre = document.getElementById('scatter-genre').value;
+  renderScatter(genre);
+}
+
+function renderScatter(genre) {
+  const source = genre === 'all'
+    ? ALL
+    : ALL.filter(g => g.genre && g.genre.split(',').map(s=>s.trim()).includes(genre));
+
+  const toPoint = g => ({
     x: Math.log10(g.owners_lower || 1),
     y: g.wilson_score,
     label: g.name,
     r: Math.max(4, Math.min(20, Math.log10(g.total_reviews + 1) * 3)),
     gem: g.is_hidden_gem
-  }));
+  });
 
-  new Chart(ctx, {
+  const regular = source.filter(g => !g.is_hidden_gem).map(toPoint);
+  const gems    = source.filter(g =>  g.is_hidden_gem).map(toPoint);
+
+  if (scatterChart) {
+    scatterChart.data.datasets[0].data = regular;
+    scatterChart.data.datasets[1].data = gems;
+    scatterChart.update();
+    return;
+  }
+
+  const ctx = document.getElementById('scatter-chart').getContext('2d');
+  scatterChart = new Chart(ctx, {
     type: 'bubble',
     data: {
       datasets: [{
         label: 'Regular',
-        data: data.filter(d => !d.gem),
+        data: regular,
         backgroundColor: 'rgba(88,166,255,0.5)',
         borderColor: 'rgba(88,166,255,0.8)',
         borderWidth: 1,
       },{
         label: '💎 Hidden Gem',
-        data: data.filter(d => d.gem),
+        data: gems,
         backgroundColor: 'rgba(227,179,65,0.6)',
         borderColor: 'rgba(227,179,65,1)',
         borderWidth: 1.5,
@@ -1055,10 +1101,7 @@ function buildScatter() {
       scales: {
         x: {
           title: { display: true, text: 'Owners (log scale)', color: '#8b949e' },
-          ticks: {
-            color: '#8b949e',
-            callback: v => fmt.owners(Math.pow(10, v))
-          },
+          ticks: { color: '#8b949e', callback: v => fmt.owners(Math.pow(10, v)) },
           grid: { color: 'rgba(48,54,61,0.6)' }
         },
         y: {
