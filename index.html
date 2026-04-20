@@ -665,6 +665,18 @@
   <!-- Stats -->
   <div class="stat-row" id="player-stats"></div>
 
+  <!-- Top 3 sections -->
+  <div class="two-col">
+    <div>
+      <div class="section-title">🏆 Top Rated</div>
+      <div class="gems-grid" id="top3-score"></div>
+    </div>
+    <div>
+      <div class="section-title">🔥 Most Active Now</div>
+      <div class="gems-grid" id="top3-ccu"></div>
+    </div>
+  </div>
+
   <!-- Hidden Gems -->
   <div class="section-title">💎 Hidden Gems</div>
   <div class="gems-grid" id="gems-grid"></div>
@@ -717,18 +729,6 @@
       <tbody id="player-tbody"></tbody>
     </table>
     <div class="pagination" id="player-pagination"></div>
-  </div>
-
-  <!-- Top 3 sections -->
-  <div class="two-col">
-    <div>
-      <div class="section-title">🏆 Top Rated</div>
-      <div id="top3-score"></div>
-    </div>
-    <div>
-      <div class="section-title">🔥 Most Active Now</div>
-      <div id="top3-ccu"></div>
-    </div>
   </div>
 
 </div>
@@ -956,40 +956,40 @@ function renderGems() {
 
 // ── Top 3 ─────────────────────────────────────────────────
 function renderTop3() {
-  const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : 'bronze';
-  const rankNum   = i => i === 0 ? '1' : i === 1 ? '2' : '3';
+  const rankColors = ['#e3b341', '#8b949e', '#c47b3a'];
+  const rankNums = ['1', '2', '3'];
 
-  // Top 3 by Wilson Score
+  const makeCards = (games, valFn) => games.map((g, i) => `
+    <div class="gem-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})" style="cursor:pointer">
+      <div style="position:absolute;top:0.6rem;left:0.75rem;font-family:var(--font-head);font-size:1.4rem;font-weight:700;color:${rankColors[i]};line-height:1;z-index:1">${rankNums[i]}</div>
+      <div class="gem-left" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.3rem;padding-left:1.8rem">
+        <div class="gem-name">${g.name}</div>
+        <div class="gem-dev">${g.developer || '—'}</div>
+        <div style="margin-top:0.4rem">
+          <div style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase">${valFn.label}</div>
+          <div style="font-family:var(--font-mono);font-size:1rem;color:${rankColors[i]};font-weight:600">${valFn.fmt(g)}</div>
+        </div>
+      </div>
+      <div style="flex:1;overflow:hidden;border-radius:6px;max-height:90px">
+        <img src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
+             alt="${g.name}"
+             style="width:100%;height:100%;object-fit:cover;display:block;border-radius:6px"
+             onerror="this.style.display='none'" />
+      </div>
+    </div>
+  `).join('');
+
   const topScore = [...ALL].sort((a,b) => b.wilson_score - a.wilson_score).slice(0,3);
-  document.getElementById('top3-score').innerHTML = topScore.map((g,i) => `
-    <div class="top3-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
-      <div class="top3-rank ${rankClass(i)}">${rankNum(i)}</div>
-      <img class="top3-cover"
-           src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
-           onerror="this.style.display='none'" />
-      <div class="top3-info">
-        <div class="top3-name">${g.name}</div>
-        <div class="top3-dev">${g.developer || '—'}</div>
-      </div>
-      <div class="top3-val">${fmt.score(g.wilson_score)}</div>
-    </div>
-  `).join('');
+  document.getElementById('top3-score').innerHTML = makeCards(topScore, {
+    label: 'Score',
+    fmt: g => fmt.score(g.wilson_score)
+  });
 
-  // Top 3 by CCU
   const topCCU = [...ALL].sort((a,b) => b.ccu - a.ccu).slice(0,3);
-  document.getElementById('top3-ccu').innerHTML = topCCU.map((g,i) => `
-    <div class="top3-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
-      <div class="top3-rank ${rankClass(i)}">${rankNum(i)}</div>
-      <img class="top3-cover"
-           src="https://cdn.akamai.steamstatic.com/steam/apps/${g.appid}/header.jpg"
-           onerror="this.style.display='none'" />
-      <div class="top3-info">
-        <div class="top3-name">${g.name}</div>
-        <div class="top3-dev">${g.developer || '—'}</div>
-      </div>
-      <div class="top3-val" style="color:var(--accent3)">${fmt.num(g.ccu)}</div>
-    </div>
-  `).join('');
+  document.getElementById('top3-ccu').innerHTML = makeCards(topCCU, {
+    label: 'Live Players',
+    fmt: g => fmt.num(g.ccu)
+  });
 }
 
 // ── Populate Genre Dropdown ───────────────────────────────
