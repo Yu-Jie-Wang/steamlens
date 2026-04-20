@@ -824,15 +824,7 @@
   <!-- Scatter chart moved here -->
   <div class="section-title">📈 Rating vs. Popularity</div>
   <div class="chart-card full-col">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-      <h3 style="margin:0">Does a better rating mean more players?</h3>
-      <div style="display:flex;align-items:center;gap:0.5rem">
-        <label style="font-family:var(--font-mono);font-size:0.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase">Genre</label>
-        <select id="scatter-genre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.3rem 0.6rem;font-family:var(--font-body);font-size:0.8rem;cursor:pointer">
-          <option value="all">All Genres</option>
-        </select>
-      </div>
-    </div>
+    <h3>Does a better rating mean more players?</h3>
     <canvas id="scatter-chart" height="320"></canvas>
   </div>
 
@@ -1209,32 +1201,11 @@ function goPage(n) {
 let scatterChart = null;
 
 function buildScatter() {
-  // Populate scatter genre dropdown
-  const sel = document.getElementById('scatter-genre');
-  const genreSet = new Set();
-  ALL.forEach(g => {
-    if (g.genre) g.genre.split(',').map(s => s.trim()).forEach(gn => genreSet.add(gn));
-  });
-  [...genreSet].sort().forEach(gn => {
-    const opt = document.createElement('option');
-    opt.value = gn; opt.textContent = gn;
-    sel.appendChild(opt);
-  });
-  sel.addEventListener('change', updateScatter);
-
-  renderScatter('all');
+  renderScatter();
 }
 
-function updateScatter() {
-  const genre = document.getElementById('scatter-genre').value;
-  renderScatter(genre);
-}
-
-function renderScatter(genre) {
-  const source = genre === 'all'
-    ? ALL
-    : ALL.filter(g => g.genre && g.genre.split(',').map(s=>s.trim()).includes(genre));
-
+function renderScatter() {
+  const source = devFiltered.length ? devFiltered : ALL;
   const toPoint = g => ({
     x: Math.log10(g.owners_lower || 1),
     y: g.wilson_score,
@@ -1529,6 +1500,9 @@ function updateDevCharts() {
   devCharts.freepaid.data.datasets[0].data = bins.slice(0,-1).map((b,i) => binCount(free, b, bins[i+1]));
   devCharts.freepaid.data.datasets[1].data = bins.slice(0,-1).map((b,i) => binCount(paid, b, bins[i+1]));
   devCharts.freepaid.update();
+
+  // Scatter
+  renderScatter();
 }
 
 function setupModal() {
