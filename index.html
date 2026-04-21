@@ -692,6 +692,7 @@
   <!-- Hidden Gems -->
   <div class="section-title">💎 Hidden Gems</div>
   <div class="gems-grid" id="gems-grid"></div>
+  <div class="pagination" id="gems-pagination" style="background:transparent;border:none;padding:0.75rem 0;margin-bottom:1rem"></div>
 
   <!-- Filters -->
   <div class="section-title">🎮 Browse All Games</div>
@@ -720,11 +721,19 @@
     </div>
     <div class="filter-group" style="min-width:160px">
       <label>Min Owners: <span class="range-val" id="owners-val">Any</span></label>
-      <input type="range" id="f-owners" min="0" max="5" step="1" value="0" style="min-width:120px" />
+      <input type="range" id="f-owners" min="0" max="9" step="1" value="0" style="min-width:120px" />
     </div>
     <div class="filter-group" style="min-width:180px">
       <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
       <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" style="min-width:120px" />
+    </div>
+    <div class="filter-group" style="min-width:160px">
+      <label>Min Live Players: <span class="range-val" id="live-val">Any</span></label>
+      <input type="range" id="f-live" min="0" max="6" step="1" value="0" style="min-width:120px" />
+    </div>
+    <div class="filter-group" style="min-width:160px">
+      <label>Min Reviews: <span class="range-val" id="reviews-val">Any</span></label>
+      <input type="range" id="f-reviews" min="0" max="6" step="1" value="0" style="min-width:120px" />
     </div>
     <button class="btn-reset" id="btn-reset">Reset</button>
   </div>
@@ -880,6 +889,9 @@ let devPage = 1;
 const DEV_PER_PAGE = 15;
 let devFiltered = [];
 
+let gemsPage = 1;
+const GEMS_PER_PAGE = 6;
+
 // ── Load Data ─────────────────────────────────────────────
 async function loadData() {
   try {
@@ -977,11 +989,20 @@ function renderPlayerStats() {
 function renderGems() {
   const gems = ALL.filter(g => g.is_hidden_gem).sort((a,b) => b.wilson_score - a.wilson_score);
   const grid = document.getElementById('gems-grid');
+  const pag  = document.getElementById('gems-pagination');
+
   if (!gems.length) {
     grid.innerHTML = '<p style="color:var(--muted);font-size:.85rem">No hidden gems found with current criteria.</p>';
+    pag.innerHTML = '';
     return;
   }
-  grid.innerHTML = gems.map(g => `
+
+  const total = Math.ceil(gems.length / GEMS_PER_PAGE);
+  if (gemsPage > total) gemsPage = 1;
+  const start = (gemsPage - 1) * GEMS_PER_PAGE;
+  const slice = gems.slice(start, start + GEMS_PER_PAGE);
+
+  grid.innerHTML = slice.map(g => `
     <div class="gem-card" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})" style="cursor:pointer">
       <div class="gem-left" style="flex:1;display:flex;flex-direction:column;justify-content:center;gap:0.4rem">
         <div class="gem-name">${g.name}</div>
@@ -999,6 +1020,28 @@ function renderGems() {
       </div>
     </div>
   `).join('');
+
+  // Pagination
+  if (total <= 1) { pag.innerHTML = ''; return; }
+  let html = `<span class="page-info">${gems.length} gems · page ${gemsPage} of ${total}</span>`;
+  html += `<button class="page-btn" onclick="goGemsPage(${gemsPage-1})" ${gemsPage===1?'disabled':''}>‹</button>`;
+  for (let p2 = 1; p2 <= total; p2++) {
+    if (total > 7 && Math.abs(p2 - gemsPage) > 2 && p2 !== 1 && p2 !== total) {
+      if (p2 === 2 || p2 === total-1) html += `<span style="color:var(--muted);padding:0 4px">…</span>`;
+      continue;
+    }
+    html += `<button class="page-btn ${p2===gemsPage?'current':''}" onclick="goGemsPage(${p2})">${p2}</button>`;
+  }
+  html += `<button class="page-btn" onclick="goGemsPage(${gemsPage+1})" ${gemsPage===total?'disabled':''}>›</button>`;
+  pag.innerHTML = html;
+}
+
+function goGemsPage(n) {
+  const gems = ALL.filter(g => g.is_hidden_gem);
+  const total = Math.ceil(gems.length / GEMS_PER_PAGE);
+  if (n < 1 || n > total) return;
+  gemsPage = n;
+  renderGems();
 }
 
 // ── Top 3 ─────────────────────────────────────────────────
@@ -1063,10 +1106,15 @@ function populateGenres() {
 }
 
 // ── Filters ───────────────────────────────────────────────
+const OWNERS_STEPS  = [0, 20000, 50000, 100000, 500000, 1000000, 5000000, 10000000, 50000000, 100000000];
+const OWNERS_LABELS = ['Any', '20K+', '50K+', '100K+', '500K+', '1M+', '5M+', '10M+', '50M+', '100M+'];
+const LIVE_STEPS    = [0, 10, 100, 1000, 10000, 100000, 1000000];
+const LIVE_LABELS   = ['Any', '10+', '100+', '1K+', '10K+', '100K+', '1M+'];
+const REVIEWS_STEPS = [0, 100, 1000, 10000, 100000, 1000000, 10000000];
+const REVIEWS_LABELS= ['Any', '100+', '1K+', '10K+', '100K+', '1M+', '10M+'];
+
 function setupFilters() {
   populateGenres();
-  const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
-  const OWNERS_LABELS = ['Any', '1M+', '5M+', '10M+', '50M+', '100M+'];
 
   document.getElementById('f-dev').addEventListener('change', applyFilters);
   document.getElementById('f-genre').addEventListener('change', applyFilters);
@@ -1079,6 +1127,14 @@ function setupFilters() {
     document.getElementById('score-val').textContent = parseFloat(e.target.value).toFixed(2);
     applyFilters();
   });
+  document.getElementById('f-live').addEventListener('input', e => {
+    document.getElementById('live-val').textContent = LIVE_LABELS[parseInt(e.target.value)];
+    applyFilters();
+  });
+  document.getElementById('f-reviews').addEventListener('input', e => {
+    document.getElementById('reviews-val').textContent = REVIEWS_LABELS[parseInt(e.target.value)];
+    applyFilters();
+  });
   document.getElementById('btn-reset').addEventListener('click', () => {
     document.getElementById('f-dev').value = 'all';
     document.getElementById('f-genre').value = 'all';
@@ -1087,6 +1143,10 @@ function setupFilters() {
     document.getElementById('owners-val').textContent = 'Any';
     document.getElementById('f-score').value = 0.5;
     document.getElementById('score-val').textContent = '0.50';
+    document.getElementById('f-live').value = 0;
+    document.getElementById('live-val').textContent = 'Any';
+    document.getElementById('f-reviews').value = 0;
+    document.getElementById('reviews-val').textContent = 'Any';
     applyFilters();
   });
 
@@ -1112,10 +1172,10 @@ function applyFilters() {
   const dev = document.getElementById('f-dev').value;
   const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
-  const ownersIdx = parseInt(document.getElementById('f-owners').value);
-  const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
-  const minOwners = OWNERS_STEPS[ownersIdx];
+  const minOwners = OWNERS_STEPS[parseInt(document.getElementById('f-owners').value)];
   const minScore = parseFloat(document.getElementById('f-score').value);
+  const minLive = LIVE_STEPS[parseInt(document.getElementById('f-live').value)];
+  const minReviews = REVIEWS_STEPS[parseInt(document.getElementById('f-reviews').value)];
 
   filtered = ALL.filter(g => {
     if (g.wilson_score < minScore) return false;
@@ -1126,6 +1186,8 @@ function applyFilters() {
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
+    if (minLive > 0 && g.ccu < minLive) return false;
+    if (minReviews > 0 && g.total_reviews < minReviews) return false;
     return true;
   });
 
