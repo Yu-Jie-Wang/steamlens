@@ -642,6 +642,7 @@
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 0.75rem 2rem;
+      transition: opacity .2s;
     }
     .sticky-filter-spacer {
       height: 160px; /* roughly matches filter bar height */
@@ -926,7 +927,7 @@
     <canvas id="scatter-chart" height="320"></canvas>
   </div>
 
-  <div class="section-title">📋 Full Dataset</div>
+  <div class="section-title" id="dev-table-section">📋 Full Dataset</div>
 
   <!-- Second Filter Bar (for Full Dataset only) -->
   <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end;margin-bottom:1rem">
@@ -1079,6 +1080,7 @@ function init() {
   setupModal();
   setTimeout(adjustStickySpace, 100);
   window.addEventListener('resize', adjustStickySpace);
+  setupStickyVisibility();
 }
 
 // ── Nav ───────────────────────────────────────────────────
@@ -2084,6 +2086,23 @@ function adjustStickySpace() {
   const bar = document.getElementById('dev-sticky-filter');
   const spacer = document.getElementById('dev-sticky-spacer');
   if (bar && spacer) spacer.style.height = bar.offsetHeight + 'px';
+}
+
+function setupStickyVisibility() {
+  const bar = document.getElementById('dev-sticky-filter');
+  const tableSection = document.getElementById('dev-table-section');
+  if (!bar || !tableSection) return;
+
+  window.addEventListener('scroll', () => {
+    const tableTop = tableSection.getBoundingClientRect().top;
+    if (tableTop <= 120) {
+      bar.style.opacity = '0';
+      bar.style.pointerEvents = 'none';
+    } else {
+      bar.style.opacity = '1';
+      bar.style.pointerEvents = 'auto';
+    }
+  });
 }
 
 loadData();
