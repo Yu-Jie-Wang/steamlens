@@ -908,7 +908,7 @@
   <!-- Row 1: Price + Owners Range -->
   <div class="two-col">
     <div class="chart-card">
-      <h3>Price Group vs. Wilson Score</h3>
+      <h3>Price Group vs. Owners</h3>
       <canvas id="price-box-chart" height="280"></canvas>
     </div>
     <div class="chart-card">
@@ -1878,9 +1878,9 @@ function buildDevCharts() {
       plugins: { legend: { display: false } },
       scales: {
         y: {
-          min: 0, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid,
-          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' },
-          ticks: { color: '#8b949e', stepSize: 0.2 }
+          ...CHART_OPTS, grid: CHART_OPTS.grid,
+          title: { display: true, text: 'Median Owners', color: '#8b949e' },
+          ticks: { color: '#8b949e', callback: v => fmt.owners(v) }
         },
         x: {
           ticks: { color: '#8b949e' }, grid: { display: false },
@@ -2017,23 +2017,21 @@ function updateDevCharts() {
   };
   const groupOrder = ['Free','$0.01–$9.99','$10–$19.99','$20–$29.99','$30–$39.99','$40–$49.99','$50–$59.99','$60+'];
   const groups = Object.fromEntries(groupOrder.map(k => [k, []]));
-  src.forEach(g => {
-    groups[priceGroupFor(g.price_usd)].push(g.wilson_score);
-  });
-  const medians = groupOrder.map(k => {
+  src.forEach(g => { groups[priceGroupFor(g.price_usd)].push(g.owners_lower || 0); });
+
+  const priceMedians = groupOrder.map(k => {
     const s = [...groups[k]].sort((a,b)=>a-b);
     return { label: k, median: s[Math.floor(s.length/2)] || 0, n: groups[k].length };
   });
 
-  // Highlight highest with gold
-  const maxMedian = Math.max(...medians.map(d => d.median));
-  const bgColors = medians.map(d => d.median === maxMedian && d.n > 0
+  const maxPriceMedian = Math.max(...priceMedians.map(d => d.median));
+  const bgColors = priceMedians.map(d => d.median === maxPriceMedian && d.n > 0
     ? 'rgba(227,179,65,0.7)' : 'rgba(88,166,255,0.5)');
-  const brColors = medians.map(d => d.median === maxMedian && d.n > 0
+  const brColors = priceMedians.map(d => d.median === maxPriceMedian && d.n > 0
     ? '#e3b341' : '#58a6ff');
 
-  devCharts.price.data.labels = medians.map(d => d.label);
-  devCharts.price.data.datasets[0].data = medians.map(d => d.median);
+  devCharts.price.data.labels = priceMedians.map(d => d.label);
+  devCharts.price.data.datasets[0].data = priceMedians.map(d => d.median);
   devCharts.price.data.datasets[0].backgroundColor = bgColors;
   devCharts.price.data.datasets[0].borderColor = brColors;
   devCharts.price.update();
