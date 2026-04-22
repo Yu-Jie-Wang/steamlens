@@ -917,26 +917,15 @@
     </div>
   </div>
 
-  <!-- Genre Bubble Chart -->
-  <div class="section-title">🎯 Popularity &amp; Score by Genre</div>
-  <div class="chart-card full-col">
-    <h3>Popularity &amp; Score by Genre</h3>
-    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
-      X = total owners (market size) · Y = median CCU (engagement) · bubble size = number of games (competition)
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>Popularity vs Score by Owners Range</h3>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">Median Wilson Score for games in each ownership bracket</div>
+      <canvas id="owners-bar-chart" height="280"></canvas>
     </div>
-    <div style="height:400px;position:relative">
-      <canvas id="genre-bubble-chart"></canvas>
+    <div class="chart-card" style="visibility:hidden">
+      <canvas id="genre-bubble-chart" style="display:none"></canvas>
     </div>
-  </div>
-
-  <!-- Owners Distribution Bar Chart -->
-  <div class="section-title">📊 Popularity vs Score by Owners Range</div>
-  <div class="chart-card full-col">
-    <h3>Popularity vs Score by Owners Range</h3>
-    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
-      Median Wilson Score for games in each ownership bracket
-    </div>
-    <canvas id="owners-bar-chart" height="260"></canvas>
   </div>
 
   <!-- Hidden scatter canvas (used by renderScatter, not displayed) -->
