@@ -905,31 +905,38 @@
     </div>
   </div>
 
+  <!-- Row 1: Price + Owners Range -->
   <div class="two-col">
     <div class="chart-card">
       <h3>Price Group vs. Wilson Score</h3>
       <canvas id="price-box-chart" height="280"></canvas>
     </div>
     <div class="chart-card">
-      <h3>CCU Ratio by Genre — Who Keeps Playing?</h3>
-      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">CCU / Owners · higher = players keep coming back</div>
-      <canvas id="ccu-ratio-chart" height="280"></canvas>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div class="chart-card">
       <h3>Popularity vs Score by Owners Range</h3>
       <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">Median Wilson Score for games in each ownership bracket</div>
       <canvas id="owners-bar-chart" height="280"></canvas>
     </div>
-    <div class="chart-card" style="visibility:hidden">
-      <canvas id="genre-bubble-chart" style="display:none"></canvas>
+  </div>
+
+  <!-- Row 2: CCU by Genre + CCU by Company -->
+  <div class="two-col">
+    <div class="chart-card">
+      <h3>CCU Ratio by Genre — Who Keeps Playing?</h3>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">CCU / Owners · higher = players keep coming back</div>
+      <canvas id="ccu-ratio-chart" height="280"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>CCU Ratio by Company — Top Engaging Studios</h3>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">Median CCU / Owners ratio · top 15 developers</div>
+      <canvas id="ccu-company-chart" height="280"></canvas>
     </div>
   </div>
 
-  <!-- Hidden scatter canvas (used by renderScatter, not displayed) -->
-  <div style="display:none"><canvas id="scatter-chart"></canvas></div>
+  <!-- Hidden canvases for JS charts not displayed -->
+  <div style="display:none">
+    <canvas id="genre-bubble-chart"></canvas>
+    <canvas id="scatter-chart"></canvas>
+  </div>
 
   <div class="section-title" id="dev-table-section">📋 Full Dataset</div>
 
@@ -1872,7 +1879,8 @@ function buildDevCharts() {
       scales: {
         y: {
           min: 0, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid,
-          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' }
+          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' },
+          ticks: { color: '#8b949e', stepSize: 0.2 }
         },
         x: {
           ticks: { color: '#8b949e' }, grid: { display: false },
@@ -1962,7 +1970,28 @@ function buildDevCharts() {
       },
       scales: {
         x: { ticks: { color: '#8b949e' }, grid: { display: false }, title: { display: true, text: 'Owners Range', color: '#8b949e' } },
-        y: { min: 0, max: 1.0, ticks: { color: '#8b949e' }, grid: { color: 'rgba(48,54,61,0.6)' }, title: { display: true, text: 'Median Wilson Score', color: '#8b949e' } }
+        y: { min: 0, max: 1.0, ticks: { color: '#8b949e', stepSize: 0.2 }, grid: { color: 'rgba(48,54,61,0.6)' }, title: { display: true, text: 'Median Wilson Score', color: '#8b949e' } }
+      }
+    }
+  });
+
+  // CCU Company chart
+  devCharts.ccuCompany = new Chart(document.getElementById('ccu-company-chart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderColor: [], borderWidth: 1, borderRadius: 3 }] },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `Median CCU ratio: ${(ctx.raw * 100).toFixed(3)}%` } }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Median CCU / Owners', color: '#8b949e' },
+          ticks: { color: '#8b949e', callback: v => (v * 100).toFixed(2) + '%' },
+          grid: { color: 'rgba(48,54,61,0.6)' }
+        },
+        y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { display: false } }
       }
     }
   });
@@ -2038,6 +2067,33 @@ function updateDevCharts() {
   devCharts.ccuRatio.data.datasets[0].borderColor = ccuGenreData.map(d =>
     d.median === maxCCU ? '#3fb950' : '#58a6ff');
   devCharts.ccuRatio.update();
+
+  // CCU Ratio by Company
+  const ccuCompanyMap = {};
+  src.forEach(g => {
+    if (!g.developer || !g.owners_lower) return;
+    const ratio = g.ccu / g.owners_lower;
+    if (!ccuCompanyMap[g.developer]) ccuCompanyMap[g.developer] = [];
+    ccuCompanyMap[g.developer].push(ratio);
+  });
+
+  const ccuCompanyData = Object.entries(ccuCompanyMap)
+    .filter(([_, arr]) => arr.length >= 3)
+    .map(([label, arr]) => {
+      const sorted = [...arr].sort((a,b) => a-b);
+      return { label, median: sorted[Math.floor(sorted.length/2)] };
+    })
+    .sort((a,b) => b.median - a.median)
+    .slice(0, 15);
+
+  const maxCompCCU = Math.max(...ccuCompanyData.map(d => d.median));
+  devCharts.ccuCompany.data.labels = ccuCompanyData.map(d => d.label);
+  devCharts.ccuCompany.data.datasets[0].data = ccuCompanyData.map(d => d.median);
+  devCharts.ccuCompany.data.datasets[0].backgroundColor = ccuCompanyData.map(d =>
+    d.median === maxCompCCU ? 'rgba(63,185,80,0.6)' : 'rgba(88,166,255,0.4)');
+  devCharts.ccuCompany.data.datasets[0].borderColor = ccuCompanyData.map(d =>
+    d.median === maxCompCCU ? '#3fb950' : '#58a6ff');
+  devCharts.ccuCompany.update();
 
   // Genre bubble chart (x=total owners, y=median score, size=game count)
   const genreMap = {};
