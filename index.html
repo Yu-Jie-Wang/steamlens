@@ -829,8 +829,20 @@
 
   <div class="two-col">
     <div class="chart-card">
-      <h3>Price Group vs. Wilson Score</h3>
+      <h3>Price Group vs. Wilson Score (Distribution)</h3>
       <canvas id="price-box-chart" height="280"></canvas>
+    </div>
+  </div>
+
+  <!-- Genre Bubble Chart -->
+  <div class="section-title">🎯 Genre Landscape</div>
+  <div class="chart-card full-col">
+    <h3>Market size, quality, and competition by genre</h3>
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
+      X = number of games (competition) · Y = median Wilson Score (quality) · bubble size = total owners (market size)
+    </div>
+    <div style="height:400px;position:relative">
+      <canvas id="genre-bubble-chart"></canvas>
     </div>
   </div>
 
@@ -838,7 +850,9 @@
   <div class="section-title">📈 Rating vs. Popularity</div>
   <div class="chart-card full-col">
     <h3>Does a better rating mean more players?</h3>
-    <canvas id="scatter-chart" height="320"></canvas>
+    <div style="height:360px;position:relative">
+      <canvas id="scatter-chart"></canvas>
+    </div>
   </div>
 
   <div class="section-title">📋 Full Dataset</div>
@@ -1364,6 +1378,7 @@ function renderScatter() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { labels: { color: '#8b949e', font: { family: 'IBM Plex Mono', size: 11 } } },
         tooltip: {
@@ -1652,18 +1667,36 @@ function buildDevCharts() {
 
   // Init empty charts
   devCharts.price = new Chart(document.getElementById('price-box-chart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ label: 'Median Wilson Score', data: [], backgroundColor: [], borderColor: [], borderWidth: 1, borderRadius: 4 }] },
+    type: 'scatter',
+    data: { datasets: [] },
     options: {
       responsive: true,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.raw.group}: ${ctx.raw.y.toFixed(4)}`
+          }
+        }
+      },
       scales: {
         y: {
           min: 0, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid,
-          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' }
+          title: { display: true, text: 'Wilson Score', color: '#8b949e' }
         },
         x: {
-          ticks: { color: '#8b949e' }, grid: { display: false },
+          type: 'linear',
+          min: -0.5,
+          max: 7.5,
+          ticks: {
+            color: '#8b949e',
+            stepSize: 1,
+            callback: v => {
+              const labels = ['Free','$0.01–9.99','$10–19.99','$20–29.99','$30–39.99','$40–49.99','$50–59.99','$60+'];
+              return labels[v] || '';
+            }
+          },
+          grid: { display: false },
           title: { display: true, text: 'Price Group (USD)', color: '#8b949e' }
         }
       }
@@ -1673,6 +1706,46 @@ function buildDevCharts() {
   const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
   const binLabels = bins.slice(0,-1).map((b,i) => `${b}–${bins[i+1]}`);
 
+  // Genre bubble chart
+  devCharts.genreBubble = new Chart(document.getElementById('genre-bubble-chart').getContext('2d'), {
+    type: 'bubble',
+    data: { datasets: [] },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return [
+                `${d.label}`,
+                `Games: ${fmt.num(d.x)}`,
+                `Median Score: ${d.y.toFixed(4)}`,
+                `Total Owners: ${fmt.owners(d.totalOwners)}`
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'logarithmic',
+          title: { display: true, text: 'Number of games (log)', color: '#8b949e' },
+          ticks: { color: '#8b949e', callback: v => fmt.num(v) },
+          grid: { color: 'rgba(48,54,61,0.6)' }
+        },
+        y: {
+          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' },
+          ticks: { color: '#8b949e' },
+          grid: { color: 'rgba(48,54,61,0.6)' },
+          min: 0.5, max: 1.0
+        }
+      }
+    }
+  });
+
   updateDevCharts();
 }
 
@@ -1681,39 +1754,75 @@ function updateDevCharts() {
   const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
   const binCount = (arr, lo, hi) => arr.filter(v => v >= lo && v < hi).length;
 
-  // Price group medians (every $10)
+  // Price group violin-like scatter (jittered)
   const priceGroupFor = p => {
-    if (p === 0) return 'Free';
-    if (p < 10)  return '$0.01–$9.99';
-    if (p < 20)  return '$10–$19.99';
-    if (p < 30)  return '$20–$29.99';
-    if (p < 40)  return '$30–$39.99';
-    if (p < 50)  return '$40–$49.99';
-    if (p < 60)  return '$50–$59.99';
-    return '$60+';
+    if (p === 0) return 0;
+    if (p < 10)  return 1;
+    if (p < 20)  return 2;
+    if (p < 30)  return 3;
+    if (p < 40)  return 4;
+    if (p < 50)  return 5;
+    if (p < 60)  return 6;
+    return 7;
   };
-  const groupOrder = ['Free','$0.01–$9.99','$10–$19.99','$20–$29.99','$30–$39.99','$40–$49.99','$50–$59.99','$60+'];
-  const groups = Object.fromEntries(groupOrder.map(k => [k, []]));
+  const groupLabels = ['Free','$0.01–9.99','$10–19.99','$20–29.99','$30–39.99','$40–49.99','$50–59.99','$60+'];
+
+  // Build scatter points with horizontal jitter
+  const pointsByGroup = [[], [], [], [], [], [], [], []];
   src.forEach(g => {
-    groups[priceGroupFor(g.price_usd)].push(g.wilson_score);
-  });
-  const medians = groupOrder.map(k => {
-    const s = [...groups[k]].sort((a,b)=>a-b);
-    return { label: k, median: s[Math.floor(s.length/2)] || 0, n: groups[k].length };
+    const gi = priceGroupFor(g.price_usd);
+    const jitter = (Math.random() - 0.5) * 0.6;  // horizontal spread
+    pointsByGroup[gi].push({ x: gi + jitter, y: g.wilson_score, group: groupLabels[gi] });
   });
 
-  // Highlight highest with gold
-  const maxMedian = Math.max(...medians.map(d => d.median));
-  const bgColors = medians.map(d => d.median === maxMedian && d.n > 0
-    ? 'rgba(227,179,65,0.7)' : 'rgba(88,166,255,0.5)');
-  const brColors = medians.map(d => d.median === maxMedian && d.n > 0
-    ? '#e3b341' : '#58a6ff');
+  // Compute median per group to pick highlight colour
+  const medians = pointsByGroup.map((arr, i) => {
+    const scores = arr.map(p => p.y).sort((a,b) => a-b);
+    return scores.length ? scores[Math.floor(scores.length/2)] : 0;
+  });
+  const maxMedian = Math.max(...medians);
 
-  devCharts.price.data.labels = medians.map(d => d.label);
-  devCharts.price.data.datasets[0].data = medians.map(d => d.median);
-  devCharts.price.data.datasets[0].backgroundColor = bgColors;
-  devCharts.price.data.datasets[0].borderColor = brColors;
+  devCharts.price.data.datasets = pointsByGroup.map((arr, i) => ({
+    label: groupLabels[i],
+    data: arr,
+    backgroundColor: medians[i] === maxMedian && arr.length > 0
+      ? 'rgba(227,179,65,0.5)' : 'rgba(88,166,255,0.4)',
+    borderColor: medians[i] === maxMedian && arr.length > 0
+      ? 'rgba(227,179,65,0.8)' : 'rgba(88,166,255,0.6)',
+    pointRadius: 2.5,
+    pointHoverRadius: 5,
+  }));
   devCharts.price.update();
+
+  // Genre bubble chart
+  const genreMap = {};
+  src.forEach(g => {
+    if (!g.genre) return;
+    g.genre.split(',').map(s=>s.trim()).forEach(gn => {
+      if (!genreMap[gn]) genreMap[gn] = { scores: [], owners: 0, count: 0 };
+      genreMap[gn].scores.push(g.wilson_score);
+      genreMap[gn].owners += g.owners_lower || 0;
+      genreMap[gn].count += 1;
+    });
+  });
+
+  const genrePoints = Object.entries(genreMap)
+    .filter(([_, v]) => v.count >= 3)  // Only show genres with 3+ games
+    .map(([label, v]) => {
+      const sorted = [...v.scores].sort((a,b) => a-b);
+      const median = sorted[Math.floor(sorted.length/2)];
+      // Scale bubble radius based on total owners (log scale)
+      const r = Math.max(5, Math.min(40, Math.log10(v.owners + 1) * 2.5));
+      return { x: v.count, y: median, label, totalOwners: v.owners, r };
+    });
+
+  devCharts.genreBubble.data.datasets = [{
+    data: genrePoints,
+    backgroundColor: 'rgba(88,166,255,0.4)',
+    borderColor: 'rgba(88,166,255,0.8)',
+    borderWidth: 1
+  }];
+  devCharts.genreBubble.update();
 
   // Scatter
   renderScatter();
