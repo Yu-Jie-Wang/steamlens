@@ -696,7 +696,7 @@
 
   <!-- Filters -->
   <div class="section-title">🎮 Browse All Games</div>
-  <div class="filter-bar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;align-items:end">
+  <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end">
     <div class="filter-group">
       <label>Search</label>
       <input type="text" id="f-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
@@ -777,7 +777,7 @@
 
   <!-- Sticky Filter Bar -->
   <div class="sticky-filter">
-    <div class="filter-bar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;align-items:end;margin:0;border:none;padding:0;background:transparent">
+    <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end;margin:0;border:none;padding:0;background:transparent">
       <div class="filter-group">
         <label>Search</label>
         <input type="text" id="df-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
@@ -829,10 +829,6 @@
       <h3>Price Group vs. Wilson Score</h3>
       <canvas id="price-box-chart" height="280"></canvas>
     </div>
-    <div class="chart-card">
-      <h3>Free vs. Paid — Wilson Score Distribution</h3>
-      <canvas id="free-paid-chart" height="280"></canvas>
-    </div>
   </div>
 
   <!-- Scatter chart moved here -->
@@ -843,6 +839,54 @@
   </div>
 
   <div class="section-title">📋 Full Dataset</div>
+
+  <!-- Second Filter Bar (for Full Dataset only) -->
+  <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end;margin-bottom:1rem">
+    <div class="filter-group">
+      <label>Search</label>
+      <input type="text" id="tf-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
+    </div>
+    <div class="filter-group">
+      <label>Company</label>
+      <select id="tf-dev" style="width:100%;min-width:0">
+        <option value="all">All Companies</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Genre</label>
+      <select id="tf-genre" style="width:100%;min-width:0">
+        <option value="all">All Genres</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Price</label>
+      <select id="tf-price" style="width:100%;min-width:0">
+        <option value="all">All</option>
+        <option value="free">Free</option>
+        <option value="paid">Paid</option>
+        <option value="under10">Under $10</option>
+        <option value="under30">Under $30</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Min Owners: <span class="range-val" id="t-owners-val">Any</span></label>
+      <input type="range" id="tf-owners" min="0" max="9" step="1" value="0" style="width:100%" />
+    </div>
+    <div class="filter-group">
+      <label>Min Wilson Score: <span class="range-val" id="t-score-val">0.50</span></label>
+      <input type="range" id="tf-score" min="0" max="1" step="0.01" value="0.5" style="width:100%" />
+    </div>
+    <div class="filter-group">
+      <label>Min Live Players: <span class="range-val" id="t-live-val">Any</span></label>
+      <input type="range" id="tf-live" min="0" max="6" step="1" value="0" style="width:100%" />
+    </div>
+    <div class="filter-group">
+      <label>Min Reviews: <span class="range-val" id="t-reviews-val">Any</span></label>
+      <input type="range" id="tf-reviews" min="0" max="6" step="1" value="0" style="width:100%" />
+    </div>
+    <button class="btn-reset" id="tf-btn-reset" style="align-self:end">Reset</button>
+  </div>
+
   <div class="table-wrap" id="dev-table-wrap">
     <table>
       <thead>
@@ -892,7 +936,8 @@ let devSortCol = 'wilson_score';
 let devSortDir = -1;
 let devPage = 1;
 const DEV_PER_PAGE = 15;
-let devFiltered = [];
+let devFiltered = [];      // For charts (controlled by sticky filter bar)
+let tableFiltered = [];    // For Full Dataset table (controlled by second filter bar)
 
 let gemsPage = 1;
 const GEMS_PER_PAGE = 6;
@@ -943,6 +988,7 @@ function init() {
   setupNav();
   setupFilters();
   setupDevFilters();
+  setupTableFilters();
   setupModal();
 }
 
@@ -1428,14 +1474,99 @@ function applyDevFilters() {
     return true;
   });
 
+  if (typeof devCharts !== 'undefined' && devCharts.price) updateDevCharts();
+}
+
+// ── Full Dataset Table Filters ────────────────────────────
+function setupTableFilters() {
+  // Populate dropdowns
+  const genreSet = new Set();
+  const devSet   = new Set();
+  ALL.forEach(g => {
+    if (g.genre) g.genre.split(',').map(s=>s.trim()).forEach(gn => genreSet.add(gn));
+    if (g.developer) devSet.add(g.developer.trim());
+  });
+  const gSel = document.getElementById('tf-genre');
+  [...genreSet].sort().forEach(gn => {
+    const o = document.createElement('option'); o.value = gn; o.textContent = gn; gSel.appendChild(o);
+  });
+  const dSel = document.getElementById('tf-dev');
+  [...devSet].sort().forEach(d => {
+    const o = document.createElement('option'); o.value = d; o.textContent = d; dSel.appendChild(o);
+  });
+
+  document.getElementById('tf-search').addEventListener('input', applyTableFilters);
+  document.getElementById('tf-dev').addEventListener('change', applyTableFilters);
+  document.getElementById('tf-genre').addEventListener('change', applyTableFilters);
+  document.getElementById('tf-price').addEventListener('change', applyTableFilters);
+  document.getElementById('tf-owners').addEventListener('input', e => {
+    document.getElementById('t-owners-val').textContent = OWNERS_LABELS[parseInt(e.target.value)];
+    applyTableFilters();
+  });
+  document.getElementById('tf-score').addEventListener('input', e => {
+    document.getElementById('t-score-val').textContent = parseFloat(e.target.value).toFixed(2);
+    applyTableFilters();
+  });
+  document.getElementById('tf-live').addEventListener('input', e => {
+    document.getElementById('t-live-val').textContent = LIVE_LABELS[parseInt(e.target.value)];
+    applyTableFilters();
+  });
+  document.getElementById('tf-reviews').addEventListener('input', e => {
+    document.getElementById('t-reviews-val').textContent = REVIEWS_LABELS[parseInt(e.target.value)];
+    applyTableFilters();
+  });
+  document.getElementById('tf-btn-reset').addEventListener('click', () => {
+    document.getElementById('tf-search').value = '';
+    document.getElementById('tf-dev').value = 'all';
+    document.getElementById('tf-genre').value = 'all';
+    document.getElementById('tf-price').value = 'all';
+    document.getElementById('tf-owners').value = 0;
+    document.getElementById('t-owners-val').textContent = 'Any';
+    document.getElementById('tf-score').value = 0.5;
+    document.getElementById('t-score-val').textContent = '0.50';
+    document.getElementById('tf-live').value = 0;
+    document.getElementById('t-live-val').textContent = 'Any';
+    document.getElementById('tf-reviews').value = 0;
+    document.getElementById('t-reviews-val').textContent = 'Any';
+    applyTableFilters();
+  });
+
+  applyTableFilters();
+}
+
+function applyTableFilters() {
+  const search   = document.getElementById('tf-search').value.trim().toLowerCase();
+  const dev      = document.getElementById('tf-dev').value;
+  const genre    = document.getElementById('tf-genre').value;
+  const price    = document.getElementById('tf-price').value;
+  const minOwners = OWNERS_STEPS[parseInt(document.getElementById('tf-owners').value)];
+  const minScore  = parseFloat(document.getElementById('tf-score').value);
+  const minLive   = LIVE_STEPS[parseInt(document.getElementById('tf-live').value)];
+  const minReviews = REVIEWS_STEPS[parseInt(document.getElementById('tf-reviews').value)];
+
+  tableFiltered = ALL.filter(g => {
+    if (search && !g.name.toLowerCase().includes(search)) return false;
+    if (g.wilson_score < minScore) return false;
+    if (dev !== 'all' && g.developer?.trim() !== dev) return false;
+    if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
+    if (price === 'free' && g.price_usd !== 0) return false;
+    if (price === 'paid' && g.price_usd === 0) return false;
+    if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
+    if (price === 'under30' && g.price_usd >= 30) return false;
+    if (minOwners > 0 && g.owners_lower < minOwners) return false;
+    if (minLive > 0 && g.ccu < minLive) return false;
+    if (minReviews > 0 && g.total_reviews < minReviews) return false;
+    return true;
+  });
+
   devPage = 1;
   renderDevTable();
-  if (typeof devCharts !== 'undefined' && devCharts.price) updateDevCharts();
 }
 
 // ── Dev Filters ───────────────────────────────────────────
 function renderDevPage() {
   devFiltered = [...ALL];
+  tableFiltered = [...ALL];
   const avg = arr => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0;
   const scores = ALL.map(g => g.wilson_score);
   const free = ALL.filter(g => g.price_usd === 0);
@@ -1452,7 +1583,7 @@ function renderDevPage() {
 }
 
 function renderDevTable() {
-  const sorted = [...devFiltered].sort((a,b) => {
+  const sorted = [...tableFiltered].sort((a,b) => {
     const av = a[devSortCol] ?? '';
     const bv = b[devSortCol] ?? '';
     if (typeof av === 'string') return devSortDir === -1 ? bv.localeCompare(av) : av.localeCompare(bv);
@@ -1500,7 +1631,7 @@ function renderDevTable() {
 }
 
 function goDevPage(n) {
-  const total = Math.ceil(devFiltered.length / DEV_PER_PAGE);
+  const total = Math.ceil(tableFiltered.length / DEV_PER_PAGE);
   if (n < 1 || n > total) return;
   devPage = n;
   renderDevTable();
@@ -1520,19 +1651,24 @@ function buildDevCharts() {
   devCharts.price = new Chart(document.getElementById('price-box-chart').getContext('2d'), {
     type: 'bar',
     data: { labels: [], datasets: [{ label: 'Median Wilson Score', data: [], backgroundColor: [], borderColor: [], borderWidth: 1, borderRadius: 4 }] },
-    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid }, x: { ticks: { color: '#8b949e' }, grid: { display: false } } } }
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          min: 0, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid,
+          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' }
+        },
+        x: {
+          ticks: { color: '#8b949e' }, grid: { display: false },
+          title: { display: true, text: 'Price Group (USD)', color: '#8b949e' }
+        }
+      }
+    }
   });
 
   const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
   const binLabels = bins.slice(0,-1).map((b,i) => `${b}–${bins[i+1]}`);
-  devCharts.freepaid = new Chart(document.getElementById('free-paid-chart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: binLabels, datasets: [
-      { label: 'Free', data: [], backgroundColor: 'rgba(63,185,80,0.6)', borderColor: '#3fb950', borderWidth: 1, borderRadius: 3 },
-      { label: 'Paid', data: [], backgroundColor: 'rgba(88,166,255,0.5)', borderColor: '#58a6ff', borderWidth: 1, borderRadius: 3 }
-    ]},
-    options: { responsive: true, plugins: { legend: { labels: { color: '#8b949e', font: { family: 'IBM Plex Mono', size: 11 } } } }, scales: { x: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { display: false } }, y: { ticks: { color: '#8b949e' }, grid: CHART_OPTS.grid } } }
-  });
 
   updateDevCharts();
 }
@@ -1542,28 +1678,39 @@ function updateDevCharts() {
   const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
   const binCount = (arr, lo, hi) => arr.filter(v => v >= lo && v < hi).length;
 
-  // Price group medians
-  const groups = { 'Free': [], '$0.01–$9.99': [], '$10–$29.99': [], '$30+': [] };
+  // Price group medians (every $10)
+  const priceGroupFor = p => {
+    if (p === 0) return 'Free';
+    if (p < 10)  return '$0.01–$9.99';
+    if (p < 20)  return '$10–$19.99';
+    if (p < 30)  return '$20–$29.99';
+    if (p < 40)  return '$30–$39.99';
+    if (p < 50)  return '$40–$49.99';
+    if (p < 60)  return '$50–$59.99';
+    return '$60+';
+  };
+  const groupOrder = ['Free','$0.01–$9.99','$10–$19.99','$20–$29.99','$30–$39.99','$40–$49.99','$50–$59.99','$60+'];
+  const groups = Object.fromEntries(groupOrder.map(k => [k, []]));
   src.forEach(g => {
-    const k = g.price_usd === 0 ? 'Free' : g.price_usd < 10 ? '$0.01–$9.99' : g.price_usd < 30 ? '$10–$29.99' : '$30+';
-    groups[k].push(g.wilson_score);
+    groups[priceGroupFor(g.price_usd)].push(g.wilson_score);
   });
-  const medians = Object.entries(groups).map(([k, arr]) => {
-    const s = [...arr].sort((a,b)=>a-b);
-    return { label: k, median: s[Math.floor(s.length/2)] || 0, n: arr.length };
+  const medians = groupOrder.map(k => {
+    const s = [...groups[k]].sort((a,b)=>a-b);
+    return { label: k, median: s[Math.floor(s.length/2)] || 0, n: groups[k].length };
   });
+
+  // Highlight highest with gold
+  const maxMedian = Math.max(...medians.map(d => d.median));
+  const bgColors = medians.map(d => d.median === maxMedian && d.n > 0
+    ? 'rgba(227,179,65,0.7)' : 'rgba(88,166,255,0.5)');
+  const brColors = medians.map(d => d.median === maxMedian && d.n > 0
+    ? '#e3b341' : '#58a6ff');
+
   devCharts.price.data.labels = medians.map(d => `${d.label} (n=${d.n})`);
   devCharts.price.data.datasets[0].data = medians.map(d => d.median);
-  devCharts.price.data.datasets[0].backgroundColor = ['rgba(63,185,80,0.6)','rgba(88,166,255,0.6)','rgba(88,166,255,0.4)','rgba(227,179,65,0.6)'];
-  devCharts.price.data.datasets[0].borderColor = ['#3fb950','#58a6ff','#58a6ff','#e3b341'];
+  devCharts.price.data.datasets[0].backgroundColor = bgColors;
+  devCharts.price.data.datasets[0].borderColor = brColors;
   devCharts.price.update();
-
-  // Free vs Paid
-  const free = src.filter(g => g.price_usd === 0).map(g => g.wilson_score);
-  const paid = src.filter(g => g.price_usd > 0).map(g => g.wilson_score);
-  devCharts.freepaid.data.datasets[0].data = bins.slice(0,-1).map((b,i) => binCount(free, b, bins[i+1]));
-  devCharts.freepaid.data.datasets[1].data = bins.slice(0,-1).map((b,i) => binCount(paid, b, bins[i+1]));
-  devCharts.freepaid.update();
 
   // Scatter
   renderScatter();
