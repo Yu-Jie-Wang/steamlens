@@ -1500,12 +1500,12 @@ function renderScatter() {
   const source = devFiltered.length ? devFiltered : ALL;
   const toPoint = g => {
     const baseX = Math.log10(g.owners_lower || 1);
-    const jitter = (Math.random() - 0.5) * 0.12; // small horizontal spread
+    const jitter = (Math.random() - 0.5) * 0.12;
     return {
       x: baseX + jitter,
       y: g.wilson_score,
       label: g.name,
-      r: Math.max(4, Math.min(20, Math.log10(g.total_reviews + 1) * 3)),
+      r: 4,
       gem: g.is_hidden_gem
     };
   };
