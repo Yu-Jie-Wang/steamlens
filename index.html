@@ -633,20 +633,17 @@
 
     /* ── STICKY FILTER BAR ── */
     .sticky-filter {
-      position: fixed;
+      position: sticky;
       top: 56px;
-      left: 0;
-      right: 0;
       z-index: 90;
       background: rgba(13,17,23,0.97);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 0.75rem 2rem;
+      margin: 0 -2rem 1.5rem -2rem;
       transition: opacity .2s;
     }
-    .sticky-filter-spacer {
-      height: 160px; /* roughly matches filter bar height */
-    }
+    .sticky-filter-spacer { display: none; }
 
     /* ── TOP 3 CARDS ── */
     .top3-card {
@@ -894,7 +891,6 @@
       <button class="btn-reset" id="df-btn-reset" style="align-self:end">Reset</button>
     </div>
   </div>
-  <div class="sticky-filter-spacer" id="dev-sticky-spacer"></div>
 
   <div class="two-col">
     <div class="chart-card">
@@ -1078,8 +1074,6 @@ function init() {
   setupDevFilters();
   setupTableFilters();
   setupModal();
-  setTimeout(adjustStickySpace, 100);
-  window.addEventListener('resize', adjustStickySpace);
   setupStickyVisibility();
 }
 
@@ -2082,12 +2076,6 @@ function closeModal() {
 }
 
 // ── Boot ──────────────────────────────────────────────────
-function adjustStickySpace() {
-  const bar = document.getElementById('dev-sticky-filter');
-  const spacer = document.getElementById('dev-sticky-spacer');
-  if (bar && spacer) spacer.style.height = bar.offsetHeight + 'px';
-}
-
 function setupStickyVisibility() {
   const bar = document.getElementById('dev-sticky-filter');
   const tableSection = document.getElementById('dev-table-section');
@@ -2095,13 +2083,9 @@ function setupStickyVisibility() {
 
   window.addEventListener('scroll', () => {
     const tableTop = tableSection.getBoundingClientRect().top;
-    if (tableTop <= 120) {
-      bar.style.opacity = '0';
-      bar.style.pointerEvents = 'none';
-    } else {
-      bar.style.opacity = '1';
-      bar.style.pointerEvents = 'auto';
-    }
+    const hide = tableTop <= 120;
+    bar.style.opacity = hide ? '0' : '1';
+    bar.style.pointerEvents = hide ? 'none' : 'auto';
   });
 }
 
