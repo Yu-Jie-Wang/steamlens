@@ -564,6 +564,73 @@
     .btn-close:hover { border-color: var(--accent3); color: var(--accent3); }
     tbody tr { cursor: pointer; }
 
+    /* ── AUTOCOMPLETE SEARCH ── */
+    .search-wrap {
+      position: relative;
+    }
+    .search-wrap .search-icon {
+      position: absolute;
+      left: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.85rem;
+      pointer-events: none;
+    }
+    .search-wrap input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 0.4rem 0.75rem 0.4rem 2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      width: 100%;
+      min-width: 0;
+      transition: border-color .2s;
+    }
+    .search-wrap input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .autocomplete-list {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+      z-index: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .autocomplete-list.open { display: block; }
+    .autocomplete-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .autocomplete-item:hover, .autocomplete-item.active {
+      background: var(--surface);
+    }
+    .autocomplete-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      padding: 1px 5px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .tag-game    { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
+    .tag-company { background: rgba(63,185,80,0.15); color: var(--accent2); border: 1px solid rgba(63,185,80,0.3); }
+    .autocomplete-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
     /* ── STICKY FILTER BAR ── */
     .sticky-filter {
       position: sticky;
@@ -700,15 +767,13 @@
   <!-- Filters -->
   <div class="section-title">🎮 Browse All Games</div>
   <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end">
-    <div class="filter-group">
-      <label>Search</label>
-      <input type="text" id="f-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
-    </div>
-    <div class="filter-group">
-      <label>Company</label>
-      <select id="f-dev" style="width:100%;min-width:0">
-        <option value="all">All Companies</option>
-      </select>
+    <div class="filter-group" style="grid-column:span 2">
+      <label>Search Game or Company</label>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="f-search" placeholder="Type game name or company..." autocomplete="off" />
+        <div class="autocomplete-list" id="f-autocomplete"></div>
+      </div>
     </div>
     <div class="filter-group">
       <label>Genre</label>
@@ -781,15 +846,13 @@
   <!-- Sticky Filter Bar -->
   <div class="sticky-filter">
     <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end;margin:0;border:none;padding:0;background:transparent">
-      <div class="filter-group">
-        <label>Search</label>
-        <input type="text" id="df-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
-      </div>
-      <div class="filter-group">
-        <label>Company</label>
-        <select id="df-dev" style="width:100%;min-width:0">
-          <option value="all">All Companies</option>
-        </select>
+      <div class="filter-group" style="grid-column:span 2">
+        <label>Search Game or Company</label>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="df-search" placeholder="Type game name or company..." autocomplete="off" />
+          <div class="autocomplete-list" id="df-autocomplete"></div>
+        </div>
       </div>
       <div class="filter-group">
         <label>Genre</label>
@@ -862,15 +925,13 @@
 
   <!-- Second Filter Bar (for Full Dataset only) -->
   <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end;margin-bottom:1rem">
-    <div class="filter-group">
-      <label>Search</label>
-      <input type="text" id="tf-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
-    </div>
-    <div class="filter-group">
-      <label>Company</label>
-      <select id="tf-dev" style="width:100%;min-width:0">
-        <option value="all">All Companies</option>
-      </select>
+    <div class="filter-group" style="grid-column:span 2">
+      <label>Search Game or Company</label>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="tf-search" placeholder="Type game name or company..." autocomplete="off" />
+        <div class="autocomplete-list" id="tf-autocomplete"></div>
+      </div>
     </div>
     <div class="filter-group">
       <label>Genre</label>
@@ -1153,6 +1214,92 @@ function renderTop3() {
   });
 }
 
+// ── Autocomplete ──────────────────────────────────────────
+function buildAutocomplete(inputId, listId, onSelect) {
+  const input = document.getElementById(inputId);
+  const list  = document.getElementById(listId);
+  let activeIdx = -1;
+
+  function getSuggestions(q) {
+    if (!q || q.length < 1) return [];
+    const ql = q.toLowerCase();
+    const results = [];
+    const seenGames = new Set();
+    const seenCompanies = new Set();
+
+    ALL.forEach(g => {
+      if (results.length >= 10) return;
+      if (!seenGames.has(g.name) && g.name.toLowerCase().includes(ql)) {
+        results.push({ type: 'game', label: g.name, value: g.name });
+        seenGames.add(g.name);
+      }
+    });
+
+    ALL.forEach(g => {
+      if (results.length >= 12) return;
+      if (g.developer && !seenCompanies.has(g.developer) &&
+          g.developer.toLowerCase().includes(ql)) {
+        results.push({ type: 'company', label: g.developer, value: g.developer });
+        seenCompanies.add(g.developer);
+      }
+    });
+
+    return results;
+  }
+
+  function renderList(items) {
+    if (!items.length) { list.classList.remove('open'); return; }
+    activeIdx = -1;
+    list.innerHTML = items.map((item, i) => `
+      <div class="autocomplete-item" data-idx="${i}" data-type="${item.type}" data-value="${item.value.replace(/"/g,'&quot;')}">
+        <span class="autocomplete-tag ${item.type === 'game' ? 'tag-game' : 'tag-company'}">
+          ${item.type === 'game' ? 'GAME' : 'CO.'}
+        </span>
+        <span class="autocomplete-text">${item.label}</span>
+      </div>
+    `).join('');
+    list.classList.add('open');
+
+    list.querySelectorAll('.autocomplete-item').forEach(el => {
+      el.addEventListener('mousedown', e => {
+        e.preventDefault();
+        input.value = el.dataset.value;
+        list.classList.remove('open');
+        onSelect({ type: el.dataset.type, value: el.dataset.value });
+      });
+    });
+  }
+
+  input.addEventListener('input', () => {
+    renderList(getSuggestions(input.value));
+    onSelect({ type: 'text', value: input.value });
+  });
+
+  input.addEventListener('keydown', e => {
+    const items = list.querySelectorAll('.autocomplete-item');
+    if (e.key === 'ArrowDown') {
+      activeIdx = Math.min(activeIdx + 1, items.length - 1);
+      items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+    } else if (e.key === 'ArrowUp') {
+      activeIdx = Math.max(activeIdx - 1, 0);
+      items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+    } else if (e.key === 'Enter' && activeIdx >= 0) {
+      const el = items[activeIdx];
+      input.value = el.dataset.value;
+      list.classList.remove('open');
+      onSelect({ type: el.dataset.type, value: el.dataset.value });
+    } else if (e.key === 'Escape') {
+      list.classList.remove('open');
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!input.contains(e.target) && !list.contains(e.target)) {
+      list.classList.remove('open');
+    }
+  });
+}
+
 // ── Populate Genre Dropdown ───────────────────────────────
 function populateGenres() {
   const genreSet = new Set();
@@ -1165,15 +1312,6 @@ function populateGenres() {
     opt.value = gn; opt.textContent = gn;
     sel.appendChild(opt);
   });
-
-  const devSet = new Set();
-  ALL.forEach(g => { if (g.developer) devSet.add(g.developer.trim()); });
-  const devSel = document.getElementById('f-dev');
-  [...devSet].sort().forEach(d => {
-    const opt = document.createElement('option');
-    opt.value = d; opt.textContent = d;
-    devSel.appendChild(opt);
-  });
 }
 
 // ── Filters ───────────────────────────────────────────────
@@ -1184,11 +1322,18 @@ const LIVE_LABELS   = ['Any', '10+', '100+', '1K+', '10K+', '100K+', '1M+'];
 const REVIEWS_STEPS = [0, 100, 1000, 10000, 100000, 1000000, 10000000];
 const REVIEWS_LABELS= ['Any', '100+', '1K+', '10K+', '100K+', '1M+', '10M+'];
 
+// Search state (stores selected type + value from autocomplete)
+const searchState = { p: { type: 'text', value: '' }, d: { type: 'text', value: '' }, t: { type: 'text', value: '' } };
+
 function setupFilters() {
   populateGenres();
 
-  document.getElementById('f-search').addEventListener('input', applyFilters);
-  document.getElementById('f-dev').addEventListener('change', applyFilters);
+  // Player autocomplete
+  buildAutocomplete('f-search', 'f-autocomplete', sel => {
+    searchState.p = sel;
+    applyFilters();
+  });
+
   document.getElementById('f-genre').addEventListener('change', applyFilters);
   document.getElementById('f-price').addEventListener('change', applyFilters);
   document.getElementById('f-owners').addEventListener('input', e => {
@@ -1209,7 +1354,7 @@ function setupFilters() {
   });
   document.getElementById('btn-reset').addEventListener('click', () => {
     document.getElementById('f-search').value = '';
-    document.getElementById('f-dev').value = 'all';
+    searchState.p = { type: 'text', value: '' };
     document.getElementById('f-genre').value = 'all';
     document.getElementById('f-price').value = 'all';
     document.getElementById('f-owners').value = 0;
@@ -1242,8 +1387,7 @@ function setupFilters() {
 }
 
 function applyFilters() {
-  const search = document.getElementById('f-search').value.trim().toLowerCase();
-  const dev = document.getElementById('f-dev').value;
+  const s = searchState.p;
   const genre = document.getElementById('f-genre').value;
   const price = document.getElementById('f-price').value;
   const minOwners = OWNERS_STEPS[parseInt(document.getElementById('f-owners').value)];
@@ -1252,9 +1396,16 @@ function applyFilters() {
   const minReviews = REVIEWS_STEPS[parseInt(document.getElementById('f-reviews').value)];
 
   filtered = ALL.filter(g => {
-    if (search && !g.name.toLowerCase().includes(search)) return false;
+    // Smart search: match game name or company depending on selection
+    if (s.value) {
+      const v = s.value.toLowerCase();
+      if (s.type === 'company') {
+        if (!g.developer || g.developer.toLowerCase() !== v) return false;
+      } else {
+        if (!g.name.toLowerCase().includes(v) && (!g.developer || !g.developer.toLowerCase().includes(v))) return false;
+      }
+    }
     if (g.wilson_score < minScore) return false;
-    if (dev !== 'all' && g.developer?.trim() !== dev) return false;
     if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
@@ -1411,27 +1562,22 @@ function renderScatter() {
 
 // ── Dev Filters ───────────────────────────────────────────
 function setupDevFilters() {
-  const OWNERS_STEPS  = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
-  const OWNERS_LABELS = ['Any', '1M+', '5M+', '10M+', '50M+', '100M+'];
-
-  // Populate dropdowns from ALL
+  // Populate genre dropdown
   const genreSet = new Set();
-  const devSet   = new Set();
   ALL.forEach(g => {
     if (g.genre) g.genre.split(',').map(s=>s.trim()).forEach(gn => genreSet.add(gn));
-    if (g.developer) devSet.add(g.developer.trim());
   });
   const gSel = document.getElementById('df-genre');
   [...genreSet].sort().forEach(gn => {
     const o = document.createElement('option'); o.value = gn; o.textContent = gn; gSel.appendChild(o);
   });
-  const dSel = document.getElementById('df-dev');
-  [...devSet].sort().forEach(d => {
-    const o = document.createElement('option'); o.value = d; o.textContent = d; dSel.appendChild(o);
+
+  // Dev autocomplete
+  buildAutocomplete('df-search', 'df-autocomplete', sel => {
+    searchState.d = sel;
+    applyDevFilters();
   });
 
-  document.getElementById('df-search').addEventListener('input', applyDevFilters);
-  document.getElementById('df-dev').addEventListener('change', applyDevFilters);
   document.getElementById('df-genre').addEventListener('change', applyDevFilters);
   document.getElementById('df-price').addEventListener('change', applyDevFilters);
   document.getElementById('df-owners').addEventListener('input', e => {
@@ -1452,7 +1598,7 @@ function setupDevFilters() {
   });
   document.getElementById('df-btn-reset').addEventListener('click', () => {
     document.getElementById('df-search').value = '';
-    document.getElementById('df-dev').value = 'all';
+    searchState.d = { type: 'text', value: '' };
     document.getElementById('df-genre').value = 'all';
     document.getElementById('df-price').value = 'all';
     document.getElementById('df-owners').value = 0;
@@ -1470,8 +1616,7 @@ function setupDevFilters() {
 }
 
 function applyDevFilters() {
-  const search   = document.getElementById('df-search').value.trim().toLowerCase();
-  const dev      = document.getElementById('df-dev').value;
+  const s = searchState.d;
   const genre    = document.getElementById('df-genre').value;
   const price    = document.getElementById('df-price').value;
   const minOwners = OWNERS_STEPS[parseInt(document.getElementById('df-owners').value)];
@@ -1480,9 +1625,15 @@ function applyDevFilters() {
   const minReviews = REVIEWS_STEPS[parseInt(document.getElementById('df-reviews').value)];
 
   devFiltered = ALL.filter(g => {
-    if (search && !g.name.toLowerCase().includes(search)) return false;
+    if (s.value) {
+      const v = s.value.toLowerCase();
+      if (s.type === 'company') {
+        if (!g.developer || g.developer.toLowerCase() !== v) return false;
+      } else {
+        if (!g.name.toLowerCase().includes(v) && (!g.developer || !g.developer.toLowerCase().includes(v))) return false;
+      }
+    }
     if (g.wilson_score < minScore) return false;
-    if (dev !== 'all' && g.developer?.trim() !== dev) return false;
     if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
@@ -1499,24 +1650,20 @@ function applyDevFilters() {
 
 // ── Full Dataset Table Filters ────────────────────────────
 function setupTableFilters() {
-  // Populate dropdowns
   const genreSet = new Set();
-  const devSet   = new Set();
   ALL.forEach(g => {
     if (g.genre) g.genre.split(',').map(s=>s.trim()).forEach(gn => genreSet.add(gn));
-    if (g.developer) devSet.add(g.developer.trim());
   });
   const gSel = document.getElementById('tf-genre');
   [...genreSet].sort().forEach(gn => {
     const o = document.createElement('option'); o.value = gn; o.textContent = gn; gSel.appendChild(o);
   });
-  const dSel = document.getElementById('tf-dev');
-  [...devSet].sort().forEach(d => {
-    const o = document.createElement('option'); o.value = d; o.textContent = d; dSel.appendChild(o);
+
+  buildAutocomplete('tf-search', 'tf-autocomplete', sel => {
+    searchState.t = sel;
+    applyTableFilters();
   });
 
-  document.getElementById('tf-search').addEventListener('input', applyTableFilters);
-  document.getElementById('tf-dev').addEventListener('change', applyTableFilters);
   document.getElementById('tf-genre').addEventListener('change', applyTableFilters);
   document.getElementById('tf-price').addEventListener('change', applyTableFilters);
   document.getElementById('tf-owners').addEventListener('input', e => {
@@ -1537,7 +1684,7 @@ function setupTableFilters() {
   });
   document.getElementById('tf-btn-reset').addEventListener('click', () => {
     document.getElementById('tf-search').value = '';
-    document.getElementById('tf-dev').value = 'all';
+    searchState.t = { type: 'text', value: '' };
     document.getElementById('tf-genre').value = 'all';
     document.getElementById('tf-price').value = 'all';
     document.getElementById('tf-owners').value = 0;
@@ -1555,8 +1702,7 @@ function setupTableFilters() {
 }
 
 function applyTableFilters() {
-  const search   = document.getElementById('tf-search').value.trim().toLowerCase();
-  const dev      = document.getElementById('tf-dev').value;
+  const s = searchState.t;
   const genre    = document.getElementById('tf-genre').value;
   const price    = document.getElementById('tf-price').value;
   const minOwners = OWNERS_STEPS[parseInt(document.getElementById('tf-owners').value)];
@@ -1565,9 +1711,15 @@ function applyTableFilters() {
   const minReviews = REVIEWS_STEPS[parseInt(document.getElementById('tf-reviews').value)];
 
   tableFiltered = ALL.filter(g => {
-    if (search && !g.name.toLowerCase().includes(search)) return false;
+    if (s.value) {
+      const v = s.value.toLowerCase();
+      if (s.type === 'company') {
+        if (!g.developer || g.developer.toLowerCase() !== v) return false;
+      } else {
+        if (!g.name.toLowerCase().includes(v) && (!g.developer || !g.developer.toLowerCase().includes(v))) return false;
+      }
+    }
     if (g.wilson_score < minScore) return false;
-    if (dev !== 'all' && g.developer?.trim() !== dev) return false;
     if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
