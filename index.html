@@ -832,6 +832,11 @@
       <h3>Price Group vs. Wilson Score</h3>
       <canvas id="price-box-chart" height="280"></canvas>
     </div>
+    <div class="chart-card">
+      <h3>CCU Ratio by Genre — Who Keeps Playing?</h3>
+      <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">CCU / Owners · higher = players keep coming back</div>
+      <canvas id="ccu-ratio-chart" height="280"></canvas>
+    </div>
   </div>
 
   <!-- Genre Bubble Chart -->
@@ -1685,7 +1690,26 @@ function buildDevCharts() {
   const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
   const binLabels = bins.slice(0,-1).map((b,i) => `${b}–${bins[i+1]}`);
 
-  // Genre bubble chart
+  // CCU Ratio chart
+  devCharts.ccuRatio = new Chart(document.getElementById('ccu-ratio-chart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderColor: [], borderWidth: 1, borderRadius: 3 }] },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `Median CCU ratio: ${(ctx.raw * 100).toFixed(3)}%` } }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Median CCU / Owners', color: '#8b949e' },
+          ticks: { color: '#8b949e', callback: v => (v * 100).toFixed(2) + '%' },
+          grid: { color: 'rgba(48,54,61,0.6)' }
+        },
+        y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  });
   devCharts.genreBubble = new Chart(document.getElementById('genre-bubble-chart').getContext('2d'), {
     type: 'bubble',
     data: { datasets: [] },
@@ -1773,6 +1797,36 @@ function updateDevCharts() {
   devCharts.price.data.datasets[0].backgroundColor = bgColors;
   devCharts.price.data.datasets[0].borderColor = brColors;
   devCharts.price.update();
+
+  // CCU Ratio by Genre
+  const ccuGenreMap = {};
+  src.forEach(g => {
+    if (!g.genre || !g.owners_lower) return;
+    const ratio = g.ccu / g.owners_lower;
+    g.genre.split(',').map(s=>s.trim()).forEach(gn => {
+      if (!ccuGenreMap[gn]) ccuGenreMap[gn] = [];
+      ccuGenreMap[gn].push(ratio);
+    });
+  });
+
+  const ccuGenreData = Object.entries(ccuGenreMap)
+    .filter(([_, arr]) => arr.length >= 5)
+    .map(([label, arr]) => {
+      const sorted = [...arr].sort((a,b) => a-b);
+      const median = sorted[Math.floor(sorted.length/2)];
+      return { label, median };
+    })
+    .sort((a,b) => b.median - a.median)
+    .slice(0, 15);
+
+  const maxCCU = Math.max(...ccuGenreData.map(d => d.median));
+  devCharts.ccuRatio.data.labels = ccuGenreData.map(d => d.label);
+  devCharts.ccuRatio.data.datasets[0].data = ccuGenreData.map(d => d.median);
+  devCharts.ccuRatio.data.datasets[0].backgroundColor = ccuGenreData.map(d =>
+    d.median === maxCCU ? 'rgba(63,185,80,0.6)' : 'rgba(88,166,255,0.4)');
+  devCharts.ccuRatio.data.datasets[0].borderColor = ccuGenreData.map(d =>
+    d.median === maxCCU ? '#3fb950' : '#58a6ff');
+  devCharts.ccuRatio.update();
 
   // Genre bubble chart
   const genreMap = {};
