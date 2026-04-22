@@ -633,14 +633,18 @@
 
     /* ── STICKY FILTER BAR ── */
     .sticky-filter {
-      position: sticky;
+      position: fixed;
       top: 56px;
+      left: 0;
+      right: 0;
       z-index: 90;
-      background: rgba(13,17,23,0.95);
+      background: rgba(13,17,23,0.97);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       padding: 0.75rem 2rem;
-      margin: 0 -2rem 1.5rem -2rem;
+    }
+    .sticky-filter-spacer {
+      height: 160px; /* roughly matches filter bar height */
     }
 
     /* ── TOP 3 CARDS ── */
@@ -844,7 +848,7 @@
   <div class="stat-row" id="dev-stats"></div>
 
   <!-- Sticky Filter Bar -->
-  <div class="sticky-filter">
+  <div class="sticky-filter" id="dev-sticky-filter">
     <div class="filter-bar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;align-items:end;margin:0;border:none;padding:0;background:transparent">
       <div class="filter-group" style="grid-column:span 2">
         <label>Search Game or Company</label>
@@ -889,6 +893,7 @@
       <button class="btn-reset" id="df-btn-reset" style="align-self:end">Reset</button>
     </div>
   </div>
+  <div class="sticky-filter-spacer" id="dev-sticky-spacer"></div>
 
   <div class="two-col">
     <div class="chart-card">
@@ -974,6 +979,7 @@
         <tr>
           <th data-col="name">Game <span class="sort-arrow">▼</span></th>
           <th data-col="developer">Developer <span class="sort-arrow">▼</span></th>
+          <th>Genre</th>
           <th data-col="wilson_score" class="sorted">Wilson Score <span class="sort-arrow">▼</span></th>
           <th data-col="positive">Positive <span class="sort-arrow">▼</span></th>
           <th data-col="negative">Negative <span class="sort-arrow">▼</span></th>
@@ -1071,6 +1077,8 @@ function init() {
   setupDevFilters();
   setupTableFilters();
   setupModal();
+  setTimeout(adjustStickySpace, 100);
+  window.addEventListener('resize', adjustStickySpace);
 }
 
 // ── Nav ───────────────────────────────────────────────────
@@ -1772,6 +1780,7 @@ function renderDevTable() {
     <tr style="cursor:pointer" onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
       <td><strong>${g.name}</strong></td>
       <td style="color:var(--muted);font-size:.8rem">${g.developer || '—'}</td>
+      <td style="font-size:.75rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.genre || '—'}</td>
       <td>
         <div class="score-bar-wrap">
           <div class="score-bar"><div class="score-bar-fill" style="width:${(g.wilson_score*100).toFixed(1)}%"></div></div>
@@ -2071,6 +2080,12 @@ function closeModal() {
 }
 
 // ── Boot ──────────────────────────────────────────────────
+function adjustStickySpace() {
+  const bar = document.getElementById('dev-sticky-filter');
+  const spacer = document.getElementById('dev-sticky-spacer');
+  if (bar && spacer) spacer.style.height = bar.offsetHeight + 'px';
+}
+
 loadData();
 </script>
 </body>
