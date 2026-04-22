@@ -239,10 +239,10 @@
     .chart-card h3 {
       font-family: var(--font-head);
       font-size: 0.95rem;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text);
       margin-bottom: 1rem;
     }
     .chart-card canvas { width: 100% !important; }
@@ -791,6 +791,8 @@
         <option value="paid">Paid</option>
         <option value="under10">Under $10</option>
         <option value="under30">Under $30</option>
+        <option value="under60">Under $60</option>
+        <option value="60plus">$60+</option>
       </select>
     </div>
     <div class="filter-group">
@@ -870,6 +872,8 @@
           <option value="paid">Paid</option>
           <option value="under10">Under $10</option>
           <option value="under30">Under $30</option>
+          <option value="under60">Under $60</option>
+          <option value="60plus">$60+</option>
         </select>
       </div>
       <div class="filter-group">
@@ -905,22 +909,25 @@
   </div>
 
   <!-- Genre Bubble Chart -->
-  <div class="section-title">🎯 Genre Landscape</div>
+  <div class="section-title">🎯 Popularity &amp; Score by Genre</div>
   <div class="chart-card full-col">
-    <h3>Market size, quality, and competition by genre</h3>
+    <h3>Popularity &amp; Score by Genre</h3>
     <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
-      X = number of games (competition) · Y = median Wilson Score (quality) · bubble size = total owners (market size)
+      X = total owners (market size) · Y = median Wilson Score (quality) · bubble size = number of games (competition)
     </div>
     <div style="height:400px;position:relative">
       <canvas id="genre-bubble-chart"></canvas>
     </div>
   </div>
 
-  <!-- Scatter chart moved here -->
-  <div class="section-title">📈 Rating vs. Popularity</div>
+  <!-- Owners Distribution Bar Chart -->
+  <div class="section-title">📊 Games by Owners Range</div>
   <div class="chart-card full-col">
-    <h3>Does a better rating mean more players?</h3>
-    <canvas id="scatter-chart" height="320"></canvas>
+    <h3>How Many Games Reach Each Ownership Level?</h3>
+    <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
+      Number of games in each owners bracket — shows how competitive each tier is
+    </div>
+    <canvas id="owners-bar-chart" height="260"></canvas>
   </div>
 
   <div class="section-title" id="dev-table-section">📋 Full Dataset</div>
@@ -949,6 +956,8 @@
         <option value="paid">Paid</option>
         <option value="under10">Under $10</option>
         <option value="under30">Under $30</option>
+        <option value="under60">Under $60</option>
+        <option value="60plus">$60+</option>
       </select>
     </div>
     <div class="filter-group">
@@ -1415,6 +1424,8 @@ function applyFilters() {
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (price === 'under60' && g.price_usd >= 60) return false;
+    if (price === '60plus' && g.price_usd < 60) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
     if (minLive > 0 && g.ccu < minLive) return false;
     if (minReviews > 0 && g.total_reviews < minReviews) return false;
@@ -1653,6 +1664,8 @@ function applyDevFilters() {
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (price === 'under60' && g.price_usd >= 60) return false;
+    if (price === '60plus' && g.price_usd < 60) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
     if (minLive > 0 && g.ccu < minLive) return false;
     if (minReviews > 0 && g.total_reviews < minReviews) return false;
@@ -1739,6 +1752,8 @@ function applyTableFilters() {
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (price === 'under60' && g.price_usd >= 60) return false;
+    if (price === '60plus' && g.price_usd < 60) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
     if (minLive > 0 && g.ccu < minLive) return false;
     if (minReviews > 0 && g.total_reviews < minReviews) return false;
@@ -1891,9 +1906,9 @@ function buildDevCharts() {
               const d = ctx.raw;
               return [
                 `${d.label}`,
-                `Games: ${fmt.num(d.x)}`,
+                `Total Owners: ${fmt.owners(d.totalOwners)}`,
                 `Median Score: ${d.y.toFixed(4)}`,
-                `Total Owners: ${fmt.owners(d.totalOwners)}`
+                `Number of Games: ${fmt.num(d.gameCount)}`
               ];
             }
           }
@@ -1902,13 +1917,12 @@ function buildDevCharts() {
       scales: {
         x: {
           type: 'logarithmic',
-          title: { display: true, text: 'Number of games (log scale)', color: '#8b949e' },
+          title: { display: true, text: 'Total Owners (market size)', color: '#8b949e' },
           ticks: {
             color: '#8b949e',
             callback: v => {
-              // Only show major round numbers
-              const shown = [10, 50, 100, 500, 1000, 5000];
-              return shown.includes(v) ? fmt.num(v) : '';
+              const shown = [1e4, 1e5, 1e6, 1e7, 1e8, 1e9];
+              return shown.includes(v) ? fmt.owners(v) : '';
             }
           },
           grid: { color: 'rgba(48,54,61,0.6)' }
@@ -1919,6 +1933,21 @@ function buildDevCharts() {
           grid: { color: 'rgba(48,54,61,0.6)' },
           min: 0.5, max: 1.0
         }
+      }
+    }
+  });
+
+  // Owners bar chart
+  const ownersBuckets = ['20K','50K','100K','500K','1M','5M','10M','50M','100M+'];
+  devCharts.ownersBar = new Chart(document.getElementById('owners-bar-chart').getContext('2d'), {
+    type: 'bar',
+    data: { labels: ownersBuckets, datasets: [{ data: [], backgroundColor: 'rgba(88,166,255,0.5)', borderColor: '#58a6ff', borderWidth: 1, borderRadius: 3 }] },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#8b949e' }, grid: { display: false }, title: { display: true, text: 'Owners Range', color: '#8b949e' } },
+        y: { ticks: { color: '#8b949e' }, grid: { color: 'rgba(48,54,61,0.6)' }, title: { display: true, text: 'Number of Games', color: '#8b949e' } }
       }
     }
   });
@@ -1995,7 +2024,7 @@ function updateDevCharts() {
     d.median === maxCCU ? '#3fb950' : '#58a6ff');
   devCharts.ccuRatio.update();
 
-  // Genre bubble chart
+  // Genre bubble chart (x=total owners, y=median score, size=game count)
   const genreMap = {};
   src.forEach(g => {
     if (!g.genre) return;
@@ -2012,9 +2041,9 @@ function updateDevCharts() {
     .map(([label, v]) => {
       const sorted = [...v.scores].sort((a,b) => a-b);
       const median = sorted[Math.floor(sorted.length/2)];
-      // Bigger bubbles: scale log of owners more aggressively
-      const r = Math.max(10, Math.min(55, Math.log10(v.owners + 1) * 4));
-      return { x: v.count, y: median, label, totalOwners: v.owners, gameCount: v.count, r };
+      // Bubble size = number of games (competition)
+      const r = Math.max(6, Math.min(50, Math.log10(v.count + 1) * 14));
+      return { x: v.owners, y: median, label, totalOwners: v.owners, gameCount: v.count, r };
     });
 
   devCharts.genreBubble.data.datasets = [{
@@ -2024,6 +2053,24 @@ function updateDevCharts() {
     borderWidth: 1
   }];
   devCharts.genreBubble.update();
+
+  // Owners distribution bar chart
+  const ownerBuckets = [
+    { label: '20K',   min: 0,       max: 50000 },
+    { label: '50K',   min: 50000,   max: 100000 },
+    { label: '100K',  min: 100000,  max: 500000 },
+    { label: '500K',  min: 500000,  max: 1000000 },
+    { label: '1M',    min: 1000000, max: 5000000 },
+    { label: '5M',    min: 5000000, max: 10000000 },
+    { label: '10M',   min: 10000000,max: 50000000 },
+    { label: '50M',   min: 50000000,max: 100000000 },
+    { label: '100M+', min: 100000000, max: Infinity }
+  ];
+  const bucketCounts = ownerBuckets.map(b =>
+    src.filter(g => g.owners_lower >= b.min && g.owners_lower < b.max).length
+  );
+  devCharts.ownersBar.data.datasets[0].data = bucketCounts;
+  devCharts.ownersBar.update();
 
   // Scatter
   renderScatter();
