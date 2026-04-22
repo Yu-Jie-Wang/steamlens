@@ -696,24 +696,24 @@
 
   <!-- Filters -->
   <div class="section-title">🎮 Browse All Games</div>
-  <div class="filter-bar" style="flex-wrap:nowrap;overflow-x:auto">
-    <div class="filter-group" style="min-width:180px;max-width:240px">
+  <div class="filter-bar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;align-items:end">
+    <div class="filter-group">
       <label>Search</label>
       <input type="text" id="f-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
     </div>
-    <div class="filter-group" style="min-width:140px;max-width:180px">
+    <div class="filter-group">
       <label>Company</label>
       <select id="f-dev" style="width:100%;min-width:0">
         <option value="all">All Companies</option>
       </select>
     </div>
-    <div class="filter-group" style="min-width:120px;max-width:160px">
+    <div class="filter-group">
       <label>Genre</label>
       <select id="f-genre" style="width:100%;min-width:0">
         <option value="all">All Genres</option>
       </select>
     </div>
-    <div class="filter-group" style="min-width:100px">
+    <div class="filter-group">
       <label>Price</label>
       <select id="f-price" style="width:100%;min-width:0">
         <option value="all">All</option>
@@ -723,23 +723,23 @@
         <option value="under30">Under $30</option>
       </select>
     </div>
-    <div class="filter-group" style="min-width:160px">
+    <div class="filter-group">
       <label>Min Owners: <span class="range-val" id="owners-val">Any</span></label>
-      <input type="range" id="f-owners" min="0" max="9" step="1" value="0" style="min-width:120px" />
+      <input type="range" id="f-owners" min="0" max="9" step="1" value="0" style="width:100%" />
     </div>
-    <div class="filter-group" style="min-width:180px">
+    <div class="filter-group">
       <label>Min Wilson Score: <span class="range-val" id="score-val">0.50</span></label>
-      <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" style="min-width:120px" />
+      <input type="range" id="f-score" min="0" max="1" step="0.01" value="0.5" style="width:100%" />
     </div>
-    <div class="filter-group" style="min-width:160px">
+    <div class="filter-group">
       <label>Min Live Players: <span class="range-val" id="live-val">Any</span></label>
-      <input type="range" id="f-live" min="0" max="6" step="1" value="0" style="min-width:120px" />
+      <input type="range" id="f-live" min="0" max="6" step="1" value="0" style="width:100%" />
     </div>
-    <div class="filter-group" style="min-width:160px">
+    <div class="filter-group">
       <label>Min Reviews: <span class="range-val" id="reviews-val">Any</span></label>
-      <input type="range" id="f-reviews" min="0" max="6" step="1" value="0" style="min-width:120px" />
+      <input type="range" id="f-reviews" min="0" max="6" step="1" value="0" style="width:100%" />
     </div>
-    <button class="btn-reset" id="btn-reset">Reset</button>
+    <button class="btn-reset" id="btn-reset" style="align-self:end">Reset</button>
   </div>
 
   <!-- Table -->
