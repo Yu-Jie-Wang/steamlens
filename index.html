@@ -777,20 +777,24 @@
 
   <!-- Sticky Filter Bar -->
   <div class="sticky-filter">
-    <div class="filter-bar" style="flex-wrap:nowrap;overflow-x:auto;margin:0;border:none;padding:0;background:transparent">
-      <div class="filter-group" style="min-width:140px;max-width:180px">
+    <div class="filter-bar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;align-items:end;margin:0;border:none;padding:0;background:transparent">
+      <div class="filter-group">
+        <label>Search</label>
+        <input type="text" id="df-search" placeholder="Game name..." style="background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:0.4rem 0.75rem;font-family:var(--font-body);font-size:0.85rem;width:100%;min-width:0" />
+      </div>
+      <div class="filter-group">
         <label>Company</label>
         <select id="df-dev" style="width:100%;min-width:0">
           <option value="all">All Companies</option>
         </select>
       </div>
-      <div class="filter-group" style="min-width:120px;max-width:160px">
+      <div class="filter-group">
         <label>Genre</label>
         <select id="df-genre" style="width:100%;min-width:0">
           <option value="all">All Genres</option>
         </select>
       </div>
-      <div class="filter-group" style="min-width:100px">
+      <div class="filter-group">
         <label>Price</label>
         <select id="df-price" style="width:100%;min-width:0">
           <option value="all">All</option>
@@ -800,15 +804,23 @@
           <option value="under30">Under $30</option>
         </select>
       </div>
-      <div class="filter-group" style="min-width:160px">
+      <div class="filter-group">
         <label>Min Owners: <span class="range-val" id="d-owners-val">Any</span></label>
-        <input type="range" id="df-owners" min="0" max="5" step="1" value="0" style="min-width:120px" />
+        <input type="range" id="df-owners" min="0" max="9" step="1" value="0" style="width:100%" />
       </div>
-      <div class="filter-group" style="min-width:180px">
+      <div class="filter-group">
         <label>Min Wilson Score: <span class="range-val" id="d-score-val">0.50</span></label>
-        <input type="range" id="df-score" min="0" max="1" step="0.01" value="0.5" style="min-width:120px" />
+        <input type="range" id="df-score" min="0" max="1" step="0.01" value="0.5" style="width:100%" />
       </div>
-      <button class="btn-reset" id="df-btn-reset">Reset</button>
+      <div class="filter-group">
+        <label>Min Live Players: <span class="range-val" id="d-live-val">Any</span></label>
+        <input type="range" id="df-live" min="0" max="6" step="1" value="0" style="width:100%" />
+      </div>
+      <div class="filter-group">
+        <label>Min Reviews: <span class="range-val" id="d-reviews-val">Any</span></label>
+        <input type="range" id="df-reviews" min="0" max="6" step="1" value="0" style="width:100%" />
+      </div>
+      <button class="btn-reset" id="df-btn-reset" style="align-self:end">Reset</button>
     </div>
   </div>
 
@@ -816,17 +828,6 @@
     <div class="chart-card">
       <h3>Price Group vs. Wilson Score</h3>
       <canvas id="price-box-chart" height="280"></canvas>
-    </div>
-    <div class="chart-card">
-      <h3>Top 15 Games by Wilson Score</h3>
-      <canvas id="top-bar-chart" height="280"></canvas>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div class="chart-card">
-      <h3>CCU vs. Wilson Score</h3>
-      <canvas id="ccu-chart" height="280"></canvas>
     </div>
     <div class="chart-card">
       <h3>Free vs. Paid — Wilson Score Distribution</h3>
@@ -1363,6 +1364,7 @@ function setupDevFilters() {
     const o = document.createElement('option'); o.value = d; o.textContent = d; dSel.appendChild(o);
   });
 
+  document.getElementById('df-search').addEventListener('input', applyDevFilters);
   document.getElementById('df-dev').addEventListener('change', applyDevFilters);
   document.getElementById('df-genre').addEventListener('change', applyDevFilters);
   document.getElementById('df-price').addEventListener('change', applyDevFilters);
@@ -1374,7 +1376,16 @@ function setupDevFilters() {
     document.getElementById('d-score-val').textContent = parseFloat(e.target.value).toFixed(2);
     applyDevFilters();
   });
+  document.getElementById('df-live').addEventListener('input', e => {
+    document.getElementById('d-live-val').textContent = LIVE_LABELS[parseInt(e.target.value)];
+    applyDevFilters();
+  });
+  document.getElementById('df-reviews').addEventListener('input', e => {
+    document.getElementById('d-reviews-val').textContent = REVIEWS_LABELS[parseInt(e.target.value)];
+    applyDevFilters();
+  });
   document.getElementById('df-btn-reset').addEventListener('click', () => {
+    document.getElementById('df-search').value = '';
     document.getElementById('df-dev').value = 'all';
     document.getElementById('df-genre').value = 'all';
     document.getElementById('df-price').value = 'all';
@@ -1382,6 +1393,10 @@ function setupDevFilters() {
     document.getElementById('d-owners-val').textContent = 'Any';
     document.getElementById('df-score').value = 0.5;
     document.getElementById('d-score-val').textContent = '0.50';
+    document.getElementById('df-live').value = 0;
+    document.getElementById('d-live-val').textContent = 'Any';
+    document.getElementById('df-reviews').value = 0;
+    document.getElementById('d-reviews-val').textContent = 'Any';
     applyDevFilters();
   });
 
@@ -1389,15 +1404,17 @@ function setupDevFilters() {
 }
 
 function applyDevFilters() {
+  const search   = document.getElementById('df-search').value.trim().toLowerCase();
   const dev      = document.getElementById('df-dev').value;
   const genre    = document.getElementById('df-genre').value;
   const price    = document.getElementById('df-price').value;
-  const ownersIdx = parseInt(document.getElementById('df-owners').value);
-  const OWNERS_STEPS = [0, 1000000, 5000000, 10000000, 50000000, 100000000];
-  const minOwners = OWNERS_STEPS[ownersIdx];
+  const minOwners = OWNERS_STEPS[parseInt(document.getElementById('df-owners').value)];
   const minScore  = parseFloat(document.getElementById('df-score').value);
+  const minLive   = LIVE_STEPS[parseInt(document.getElementById('df-live').value)];
+  const minReviews = REVIEWS_STEPS[parseInt(document.getElementById('df-reviews').value)];
 
   devFiltered = ALL.filter(g => {
+    if (search && !g.name.toLowerCase().includes(search)) return false;
     if (g.wilson_score < minScore) return false;
     if (dev !== 'all' && g.developer?.trim() !== dev) return false;
     if (genre !== 'all' && (!g.genre || !g.genre.split(',').map(s=>s.trim()).includes(genre))) return false;
@@ -1406,6 +1423,8 @@ function applyDevFilters() {
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
+    if (minLive > 0 && g.ccu < minLive) return false;
+    if (minReviews > 0 && g.total_reviews < minReviews) return false;
     return true;
   });
 
@@ -1426,7 +1445,6 @@ function renderDevPage() {
     <div class="stat-card"><div class="label">Total Games</div><div class="value blue">${ALL.length}</div></div>
     <div class="stat-card"><div class="label">Free Avg Score</div><div class="value green">${avg(free.map(g=>g.wilson_score)).toFixed(3)}</div></div>
     <div class="stat-card"><div class="label">Paid Avg Score</div><div class="value gold">${avg(paid.map(g=>g.wilson_score)).toFixed(3)}</div></div>
-    <div class="stat-card"><div class="label">Avg CCU</div><div class="value blue">${fmt.num(Math.round(avg(ALL.map(g=>g.ccu))))}</div></div>
     <div class="stat-card"><div class="label">Total Reviews</div><div class="value green">${fmt.num(ALL.reduce((a,g)=>a+g.total_reviews,0))}</div></div>
   `;
 
@@ -1505,18 +1523,6 @@ function buildDevCharts() {
     options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid }, x: { ticks: { color: '#8b949e' }, grid: { display: false } } } }
   });
 
-  devCharts.top = new Chart(document.getElementById('top-bar-chart').getContext('2d'), {
-    type: 'bar',
-    data: { labels: [], datasets: [{ data: [], backgroundColor: [], borderColor: [], borderWidth: 1, borderRadius: 3 }] },
-    options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { min: 0.5, max: 1.0, ...CHART_OPTS, grid: CHART_OPTS.grid }, y: { ticks: { color: '#8b949e', font: { size: 10 } }, grid: { display: false } } } }
-  });
-
-  devCharts.ccu = new Chart(document.getElementById('ccu-chart').getContext('2d'), {
-    type: 'scatter',
-    data: { datasets: [{ data: [], backgroundColor: 'rgba(247,129,102,0.5)', borderColor: 'rgba(247,129,102,0.8)', borderWidth: 1, pointRadius: 5 }] },
-    options: { responsive: true, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: ${ctx.raw.y.toFixed(4)}` } } }, scales: { x: { title: { display: true, text: 'CCU (log)', color: '#8b949e' }, ticks: { color: '#8b949e', callback: v => fmt.num(Math.round(Math.pow(10,v))) }, grid: CHART_OPTS.grid }, y: { title: { display: true, text: 'Wilson Score', color: '#8b949e' }, ticks: { color: '#8b949e' }, grid: CHART_OPTS.grid, min: 0.4 } } }
-  });
-
   const bins = [0.5,0.6,0.7,0.8,0.85,0.9,0.95,1.0];
   const binLabels = bins.slice(0,-1).map((b,i) => `${b}–${bins[i+1]}`);
   devCharts.freepaid = new Chart(document.getElementById('free-paid-chart').getContext('2d'), {
@@ -1551,18 +1557,6 @@ function updateDevCharts() {
   devCharts.price.data.datasets[0].backgroundColor = ['rgba(63,185,80,0.6)','rgba(88,166,255,0.6)','rgba(88,166,255,0.4)','rgba(227,179,65,0.6)'];
   devCharts.price.data.datasets[0].borderColor = ['#3fb950','#58a6ff','#58a6ff','#e3b341'];
   devCharts.price.update();
-
-  // Top 15
-  const top15 = [...src].sort((a,b)=>b.wilson_score-a.wilson_score).slice(0,15);
-  devCharts.top.data.labels = top15.map(g => g.name.length > 18 ? g.name.slice(0,16)+'…' : g.name);
-  devCharts.top.data.datasets[0].data = top15.map(g => g.wilson_score);
-  devCharts.top.data.datasets[0].backgroundColor = top15.map(g => g.is_hidden_gem ? 'rgba(227,179,65,0.7)' : 'rgba(88,166,255,0.6)');
-  devCharts.top.data.datasets[0].borderColor = top15.map(g => g.is_hidden_gem ? '#e3b341' : '#58a6ff');
-  devCharts.top.update();
-
-  // CCU scatter
-  devCharts.ccu.data.datasets[0].data = src.map(g => ({ x: Math.log10(g.ccu + 1), y: g.wilson_score, label: g.name }));
-  devCharts.ccu.update();
 
   // Free vs Paid
   const free = src.filter(g => g.price_usd === 0).map(g => g.wilson_score);
