@@ -1498,13 +1498,17 @@ function buildScatter() {
 
 function renderScatter() {
   const source = devFiltered.length ? devFiltered : ALL;
-  const toPoint = g => ({
-    x: Math.log10(g.owners_lower || 1),
-    y: g.wilson_score,
-    label: g.name,
-    r: Math.max(4, Math.min(20, Math.log10(g.total_reviews + 1) * 3)),
-    gem: g.is_hidden_gem
-  });
+  const toPoint = g => {
+    const baseX = Math.log10(g.owners_lower || 1);
+    const jitter = (Math.random() - 0.5) * 0.12; // small horizontal spread
+    return {
+      x: baseX + jitter,
+      y: g.wilson_score,
+      label: g.name,
+      r: Math.max(4, Math.min(20, Math.log10(g.total_reviews + 1) * 3)),
+      gem: g.is_hidden_gem
+    };
+  };
 
   const regular = source.filter(g => !g.is_hidden_gem).map(toPoint);
   const gems    = source.filter(g =>  g.is_hidden_gem).map(toPoint);
@@ -1550,7 +1554,13 @@ function renderScatter() {
       scales: {
         x: {
           title: { display: true, text: 'Owners (log scale)', color: '#8b949e' },
-          ticks: { color: '#8b949e', callback: v => fmt.owners(Math.pow(10, v)) },
+          ticks: {
+            color: '#8b949e',
+            callback: v => {
+              const labels = { 3: '1K', 4: '10K', 5: '100K', 6: '1M', 7: '10M', 8: '100M' };
+              return labels[Math.round(v)] || '';
+            }
+          },
           grid: { color: 'rgba(48,54,61,0.6)' }
         },
         y: {
