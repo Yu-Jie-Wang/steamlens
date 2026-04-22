@@ -259,10 +259,11 @@
     thead tr { background: var(--surface2); }
     th {
       font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 2px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--text);
       padding: 0.75rem 1rem;
       text-align: left;
       cursor: pointer;
@@ -270,8 +271,10 @@
       white-space: nowrap;
       transition: color .15s;
     }
-    th:hover { color: var(--text); }
+    th:hover { color: var(--accent); }
     th.sorted { color: var(--accent); }
+    th.num-col { text-align: right; }
+    td.num-col { text-align: right; }
     th .sort-arrow {
       display: inline-block;
       margin-left: 4px;
@@ -790,7 +793,10 @@
         <option value="free">Free</option>
         <option value="paid">Paid</option>
         <option value="under10">Under $10</option>
+        <option value="under20">Under $20</option>
         <option value="under30">Under $30</option>
+        <option value="under40">Under $40</option>
+        <option value="under50">Under $50</option>
         <option value="under60">Under $60</option>
         <option value="60plus">$60+</option>
       </select>
@@ -822,11 +828,11 @@
           <th>#</th>
           <th data-col="name">Game <span class="sort-arrow">▼</span></th>
           <th>Genre</th>
-          <th data-col="wilson_score" class="sorted">Score <span class="sort-arrow">▼</span></th>
-          <th data-col="price_usd">Price <span class="sort-arrow">▼</span></th>
-          <th data-col="owners_lower">Owners <span class="sort-arrow">▼</span></th>
-          <th data-col="ccu">Live <span class="sort-arrow">▼</span></th>
-          <th data-col="total_reviews">Reviews <span class="sort-arrow">▼</span></th>
+          <th data-col="wilson_score" class="sorted num-col">Score <span class="sort-arrow">▼</span></th>
+          <th data-col="price_usd" class="num-col">Price <span class="sort-arrow">▼</span></th>
+          <th data-col="owners_lower" class="num-col">Owners <span class="sort-arrow">▼</span></th>
+          <th data-col="ccu" class="num-col">Live <span class="sort-arrow">▼</span></th>
+          <th data-col="total_reviews" class="num-col">Reviews <span class="sort-arrow">▼</span></th>
         </tr>
       </thead>
       <tbody id="player-tbody"></tbody>
@@ -871,7 +877,10 @@
           <option value="free">Free</option>
           <option value="paid">Paid</option>
           <option value="under10">Under $10</option>
+          <option value="under20">Under $20</option>
           <option value="under30">Under $30</option>
+          <option value="under40">Under $40</option>
+          <option value="under50">Under $50</option>
           <option value="under60">Under $60</option>
           <option value="60plus">$60+</option>
         </select>
@@ -921,11 +930,11 @@
   </div>
 
   <!-- Owners Distribution Bar Chart -->
-  <div class="section-title">📊 Games by Owners Range</div>
+  <div class="section-title">📊 Popularity vs Score by Owners Range</div>
   <div class="chart-card full-col">
-    <h3>How Many Games Reach Each Ownership Level?</h3>
+    <h3>Popularity vs Score by Owners Range</h3>
     <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
-      Number of games in each owners bracket — shows how competitive each tier is
+      Median Wilson Score for games in each ownership bracket
     </div>
     <canvas id="owners-bar-chart" height="260"></canvas>
   </div>
@@ -958,7 +967,10 @@
         <option value="free">Free</option>
         <option value="paid">Paid</option>
         <option value="under10">Under $10</option>
+        <option value="under20">Under $20</option>
         <option value="under30">Under $30</option>
+        <option value="under40">Under $40</option>
+        <option value="under50">Under $50</option>
         <option value="under60">Under $60</option>
         <option value="60plus">$60+</option>
       </select>
@@ -989,12 +1001,12 @@
           <th data-col="name">Game <span class="sort-arrow">▼</span></th>
           <th data-col="developer">Developer <span class="sort-arrow">▼</span></th>
           <th>Genre</th>
-          <th data-col="wilson_score" class="sorted">Wilson Score <span class="sort-arrow">▼</span></th>
-          <th data-col="positive">Positive <span class="sort-arrow">▼</span></th>
-          <th data-col="negative">Negative <span class="sort-arrow">▼</span></th>
-          <th data-col="owners_lower">Owners <span class="sort-arrow">▼</span></th>
-          <th data-col="price_usd">Price <span class="sort-arrow">▼</span></th>
-          <th data-col="ccu">CCU <span class="sort-arrow">▼</span></th>
+          <th data-col="wilson_score" class="sorted num-col">Wilson Score <span class="sort-arrow">▼</span></th>
+          <th data-col="positive" class="num-col">Positive <span class="sort-arrow">▼</span></th>
+          <th data-col="negative" class="num-col">Negative <span class="sort-arrow">▼</span></th>
+          <th data-col="owners_lower" class="num-col">Owners <span class="sort-arrow">▼</span></th>
+          <th data-col="price_usd" class="num-col">Price <span class="sort-arrow">▼</span></th>
+          <th data-col="ccu" class="num-col">CCU <span class="sort-arrow">▼</span></th>
         </tr>
       </thead>
       <tbody id="dev-tbody"></tbody>
@@ -1426,7 +1438,10 @@ function applyFilters() {
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
+    if (price === 'under20' && (g.price_usd === 0 || g.price_usd >= 20)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (price === 'under40' && g.price_usd >= 40) return false;
+    if (price === 'under50' && g.price_usd >= 50) return false;
     if (price === 'under60' && g.price_usd >= 60) return false;
     if (price === '60plus' && g.price_usd < 60) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
@@ -1459,19 +1474,19 @@ function renderTable() {
 
   tbody.innerHTML = slice.map((g, i) => `
     <tr onclick="openModal(${JSON.stringify(g).replace(/"/g, '&quot;')})">
-      <td style="color:var(--muted);font-family:var(--font-mono);font-size:.75rem">${start + i + 1}</td>
+      <td style="color:var(--muted);font-family:var(--font-mono);font-size:.75rem;text-align:right">${start + i + 1}</td>
       <td><strong>${g.name}</strong><br><span style="font-size:.75rem;color:var(--muted)">${g.developer || ''}</span></td>
       <td style="font-size:.75rem;color:var(--muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.genre || '—'}</td>
-      <td>
-        <div class="score-bar-wrap">
+      <td class="num-col">
+        <div class="score-bar-wrap" style="justify-content:flex-end">
           <div class="score-bar"><div class="score-bar-fill" style="width:${(g.wilson_score*100).toFixed(1)}%"></div></div>
           <span class="score-num">${fmt.score(g.wilson_score)}</span>
         </div>
       </td>
-      <td><span class="badge ${g.price_usd === 0 ? 'badge-free' : 'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
-      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
-      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
-      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.total_reviews)}</td>
+      <td class="num-col"><span class="badge ${g.price_usd === 0 ? 'badge-free' : 'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.total_reviews)}</td>
     </tr>
   `).join('');
 
@@ -1666,7 +1681,10 @@ function applyDevFilters() {
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
+    if (price === 'under20' && (g.price_usd === 0 || g.price_usd >= 20)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (price === 'under40' && g.price_usd >= 40) return false;
+    if (price === 'under50' && g.price_usd >= 50) return false;
     if (price === 'under60' && g.price_usd >= 60) return false;
     if (price === '60plus' && g.price_usd < 60) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
@@ -1754,7 +1772,10 @@ function applyTableFilters() {
     if (price === 'free' && g.price_usd !== 0) return false;
     if (price === 'paid' && g.price_usd === 0) return false;
     if (price === 'under10' && (g.price_usd === 0 || g.price_usd >= 10)) return false;
+    if (price === 'under20' && (g.price_usd === 0 || g.price_usd >= 20)) return false;
     if (price === 'under30' && g.price_usd >= 30) return false;
+    if (price === 'under40' && g.price_usd >= 40) return false;
+    if (price === 'under50' && g.price_usd >= 50) return false;
     if (price === 'under60' && g.price_usd >= 60) return false;
     if (price === '60plus' && g.price_usd < 60) return false;
     if (minOwners > 0 && g.owners_lower < minOwners) return false;
@@ -1805,17 +1826,17 @@ function renderDevTable() {
       <td><strong>${g.name}</strong></td>
       <td style="color:var(--muted);font-size:.8rem">${g.developer || '—'}</td>
       <td style="font-size:.75rem;color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${g.genre || '—'}</td>
-      <td>
-        <div class="score-bar-wrap">
+      <td class="num-col">
+        <div class="score-bar-wrap" style="justify-content:flex-end">
           <div class="score-bar"><div class="score-bar-fill" style="width:${(g.wilson_score*100).toFixed(1)}%"></div></div>
           <span class="score-num">${fmt.score(g.wilson_score)}</span>
         </div>
       </td>
-      <td style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent2)">${fmt.num(g.positive)}</td>
-      <td style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent3)">${fmt.num(g.negative)}</td>
-      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
-      <td><span class="badge ${g.price_usd===0?'badge-free':'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
-      <td style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent2)">${fmt.num(g.positive)}</td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem;color:var(--accent3)">${fmt.num(g.negative)}</td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem">${fmt.owners(g.owners_lower)}</td>
+      <td class="num-col"><span class="badge ${g.price_usd===0?'badge-free':'badge-paid'}">${fmt.price(g.price_usd)}</span></td>
+      <td class="num-col" style="font-family:var(--font-mono);font-size:.8rem">${fmt.num(g.ccu)}</td>
     </tr>
   `).join('');
 
@@ -1940,17 +1961,20 @@ function buildDevCharts() {
     }
   });
 
-  // Owners bar chart
+  // Owners bar chart (median score by owners range)
   const ownersBuckets = ['20K','50K','100K','500K','1M','5M','10M','50M','100M+'];
   devCharts.ownersBar = new Chart(document.getElementById('owners-bar-chart').getContext('2d'), {
     type: 'bar',
-    data: { labels: ownersBuckets, datasets: [{ data: [], backgroundColor: 'rgba(88,166,255,0.5)', borderColor: '#58a6ff', borderWidth: 1, borderRadius: 3 }] },
+    data: { labels: ownersBuckets, datasets: [{ data: [], backgroundColor: [], borderColor: [], borderWidth: 1, borderRadius: 3 }] },
     options: {
       responsive: true,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `Median Score: ${ctx.raw.toFixed(4)}` } }
+      },
       scales: {
         x: { ticks: { color: '#8b949e' }, grid: { display: false }, title: { display: true, text: 'Owners Range', color: '#8b949e' } },
-        y: { ticks: { color: '#8b949e' }, grid: { color: 'rgba(48,54,61,0.6)' }, title: { display: true, text: 'Number of Games', color: '#8b949e' } }
+        y: { min: 0, max: 1.0, ticks: { color: '#8b949e' }, grid: { color: 'rgba(48,54,61,0.6)' }, title: { display: true, text: 'Median Wilson Score', color: '#8b949e' } }
       }
     }
   });
@@ -2057,22 +2081,29 @@ function updateDevCharts() {
   }];
   devCharts.genreBubble.update();
 
-  // Owners distribution bar chart
+  // Owners bar chart: median Wilson Score per bucket
   const ownerBuckets = [
-    { label: '20K',   min: 0,       max: 50000 },
-    { label: '50K',   min: 50000,   max: 100000 },
-    { label: '100K',  min: 100000,  max: 500000 },
-    { label: '500K',  min: 500000,  max: 1000000 },
-    { label: '1M',    min: 1000000, max: 5000000 },
-    { label: '5M',    min: 5000000, max: 10000000 },
-    { label: '10M',   min: 10000000,max: 50000000 },
-    { label: '50M',   min: 50000000,max: 100000000 },
+    { label: '20K',   min: 0,        max: 50000 },
+    { label: '50K',   min: 50000,    max: 100000 },
+    { label: '100K',  min: 100000,   max: 500000 },
+    { label: '500K',  min: 500000,   max: 1000000 },
+    { label: '1M',    min: 1000000,  max: 5000000 },
+    { label: '5M',    min: 5000000,  max: 10000000 },
+    { label: '10M',   min: 10000000, max: 50000000 },
+    { label: '50M',   min: 50000000, max: 100000000 },
     { label: '100M+', min: 100000000, max: Infinity }
   ];
-  const bucketCounts = ownerBuckets.map(b =>
-    src.filter(g => g.owners_lower >= b.min && g.owners_lower < b.max).length
-  );
-  devCharts.ownersBar.data.datasets[0].data = bucketCounts;
+  const bucketScores = ownerBuckets.map(b => {
+    const arr = src.filter(g => g.owners_lower >= b.min && g.owners_lower < b.max)
+                   .map(g => g.wilson_score).sort((a,b) => a-b);
+    return arr.length ? arr[Math.floor(arr.length/2)] : 0;
+  });
+  const maxScore = Math.max(...bucketScores);
+  devCharts.ownersBar.data.datasets[0].data = bucketScores;
+  devCharts.ownersBar.data.datasets[0].backgroundColor = bucketScores.map(s =>
+    s === maxScore ? 'rgba(227,179,65,0.7)' : 'rgba(88,166,255,0.5)');
+  devCharts.ownersBar.data.datasets[0].borderColor = bucketScores.map(s =>
+    s === maxScore ? '#e3b341' : '#58a6ff');
   devCharts.ownersBar.update();
 
   // Scatter
