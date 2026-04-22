@@ -922,7 +922,7 @@
   <div class="chart-card full-col">
     <h3>Popularity &amp; Score by Genre</h3>
     <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.5rem">
-      X = total owners (market size) · Y = median Wilson Score (quality) · bubble size = number of games (competition)
+      X = total owners (market size) · Y = median CCU (engagement) · bubble size = number of games (competition)
     </div>
     <div style="height:400px;position:relative">
       <canvas id="genre-bubble-chart"></canvas>
@@ -1931,7 +1931,7 @@ function buildDevCharts() {
               return [
                 `${d.label}`,
                 `Total Owners: ${fmt.owners(d.totalOwners)}`,
-                `Median Score: ${d.y.toFixed(4)}`,
+                `Median CCU: ${fmt.num(d.y)}`,
                 `Number of Games: ${fmt.num(d.gameCount)}`
               ];
             }
@@ -1952,10 +1952,9 @@ function buildDevCharts() {
           grid: { color: 'rgba(48,54,61,0.6)' }
         },
         y: {
-          title: { display: true, text: 'Median Wilson Score', color: '#8b949e' },
-          ticks: { color: '#8b949e' },
-          grid: { color: 'rgba(48,54,61,0.6)' },
-          min: 0.5, max: 1.0
+          title: { display: true, text: 'Median CCU', color: '#8b949e' },
+          ticks: { color: '#8b949e', callback: v => fmt.num(v) },
+          grid: { color: 'rgba(48,54,61,0.6)' }
         }
       }
     }
@@ -2056,8 +2055,8 @@ function updateDevCharts() {
   src.forEach(g => {
     if (!g.genre) return;
     g.genre.split(',').map(s=>s.trim()).forEach(gn => {
-      if (!genreMap[gn]) genreMap[gn] = { scores: [], owners: 0, count: 0 };
-      genreMap[gn].scores.push(g.wilson_score);
+      if (!genreMap[gn]) genreMap[gn] = { ccus: [], owners: 0, count: 0 };
+      genreMap[gn].ccus.push(g.ccu);
       genreMap[gn].owners += g.owners_lower || 0;
       genreMap[gn].count += 1;
     });
@@ -2066,11 +2065,10 @@ function updateDevCharts() {
   const genrePoints = Object.entries(genreMap)
     .filter(([_, v]) => v.count >= 3)
     .map(([label, v]) => {
-      const sorted = [...v.scores].sort((a,b) => a-b);
-      const median = sorted[Math.floor(sorted.length/2)];
-      // Bubble size = number of games (competition)
+      const sorted = [...v.ccus].sort((a,b) => a-b);
+      const medianCCU = sorted[Math.floor(sorted.length/2)];
       const r = Math.max(6, Math.min(50, Math.log10(v.count + 1) * 14));
-      return { x: v.owners, y: median, label, totalOwners: v.owners, gameCount: v.count, r };
+      return { x: v.owners, y: medianCCU, label, totalOwners: v.owners, gameCount: v.count, r };
     });
 
   devCharts.genreBubble.data.datasets = [{
